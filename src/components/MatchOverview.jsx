@@ -1,7 +1,9 @@
 // components/MatchOverview.jsx (shared viewer hides action buttons)
 import React from "react";
-import { ArrowLeft, Download, FileText, ClipboardCheck } from "lucide-react";
+import { ArrowLeft, Download, FileText, ClipboardCheck, Users } from "lucide-react";
 import { calculatePoints, calculateTotalGoals } from "../utils/matchUtils";
+
+const REQUIRED_ON_FIELD = 7;
 
 const MatchOverview = ({
   match,
@@ -18,6 +20,18 @@ const MatchOverview = ({
   userRole = 'viewer',
 }) => {
   const isViewer = isShared && userRole !== 'organizer';
+
+  const lineupCount = (p) => Array.isArray(p.lineup) ? p.lineup.length : 0;
+  const lineupBadge = (p) => {
+    const count = lineupCount(p);
+    const ok = count === REQUIRED_ON_FIELD;
+    return (
+      <span title={`Formazione: ${count}/${REQUIRED_ON_FIELD}`}
+        className={`ml-2 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded border ${ok ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+        <Users className="w-3 h-3" /> {count}/{REQUIRED_ON_FIELD}
+      </span>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-neutral-50 p-4">
@@ -82,42 +96,54 @@ const MatchOverview = ({
           </div>
 
           <div className="space-y-2 mb-6">
-            {match.periods.map((period, idx) => (
-              <div
-                key={idx}
-                className={`border rounded-lg p-4 ${
-                  period.completed ? "bg-neutral-50" : "bg-white"
-                }`}
-              >
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h3 className="font-semibold text-neutral-900">{period.name}</h3>
-                    <p className="text-sm text-neutral-600">
-                      {period.vigontina} - {period.opponent}
-                      {period.goals && period.goals.length > 0 && ` (${period.goals.length} eventi)`}
-                    </p>
-                  </div>
-                  {!period.completed ? (
-                    !isViewer && (
+            {match.periods.map((period, idx) => {
+              const completed = !!period.completed;
+              const isPT = period.name === 'PROVA TECNICA';
+              const canPlay = isPT || lineupCount(period) === REQUIRED_ON_FIELD;
+              return (
+                <div
+                  key={idx}
+                  className={`border rounded-lg p-4 ${
+                    completed ? "bg-neutral-50" : "bg-white"
+                  }`}
+                >
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center">
+                      <div>
+                        <h3 className="font-semibold text-neutral-900 flex items-center">
+                          {period.name}
+                          {!isPT && lineupBadge(period)}
+                        </h3>
+                        <p className="text-sm text-neutral-600">
+                          {period.vigontina} - {period.opponent}
+                          {period.goals && period.goals.length > 0 && ` (${period.goals.length} eventi)`}
+                        </p>
+                      </div>
+                    </div>
+                    {!completed ? (
+                      !isViewer && (
+                        <button
+                          onClick={() => onStartPeriod(idx)}
+                          disabled={!canPlay}
+                          className={`px-3 py-1 rounded text-sm ${canPlay ? 'bg-primary text-white hover:bg-primary-dark' : 'bg-neutral-200 text-neutral-500 cursor-not-allowed'}`}
+                          title={canPlay? (isPT? 'Inizia' : 'Gioca') : `Seleziona ${REQUIRED_ON_FIELD} giocatori`}
+                        >
+                          {isPT ? "Inizia" : "Gioca"}
+                        </button>
+                      )
+                    ) : (
                       <button
-                        onClick={() => onStartPeriod(idx)}
-                        className="bg-primary text-white px-3 py-1 rounded hover:bg-primary-dark text-sm"
+                        onClick={() => onViewPeriod(idx)}
+                        className="border border-primary text-primary px-3 py-1 rounded hover:bg-primary-light flex items-center gap-1 text-sm"
                       >
-                        {period.name === "PROVA TECNICA" ? "Inizia" : "Gioca"}
+                        <FileText className="w-3 h-3" />
+                        Dettagli
                       </button>
-                    )
-                  ) : (
-                    <button
-                      onClick={() => onViewPeriod(idx)}
-                      className="border border-primary text-primary px-3 py-1 rounded hover:bg-primary-light flex items-center gap-1 text-sm"
-                    >
-                      <FileText className="w-3 h-3" />
-                      Dettagli
-                    </button>
-                  )}
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Rapporto FIGC */}
