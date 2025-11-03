@@ -5,8 +5,8 @@ import { exportFIGCReportToPDF } from '../utils/figcExportUtils';
 
 const FIGCReport = ({ match, onBack }) => {
   const [formData, setFormData] = useState({
-    // Categoria FISSA: X1 = Esordienti 1° Anno 2014
-    category: 'X1',
+    // Categoria PULCINI 2025-2026
+    category: 'PULCINI',
     
     // Dati gara
     refereeManager: match.assistantReferee || '',
@@ -17,7 +17,7 @@ const FIGCReport = ({ match, onBack }) => {
     girone: '',
     date: match.date,
     time: '15:00',
-    location: 'Via A. Moro - Busa di Vigonza (PD)',
+    location: 'Padova (PD)',
     fieldType: 'Comunale',
     
     // Valutazioni squadra ospitante (da compilare da ospitato)
@@ -113,16 +113,16 @@ const FIGCReport = ({ match, onBack }) => {
               <div className="flex items-center gap-2">
                 <div className="w-10 h-10 rounded-full overflow-hidden bg-white flex items-center justify-center border-2 border-blue-200">
                   <img
-                    src={`${import.meta.env.BASE_URL}logo-usma.png`}
-                    alt="USMA Padova Logo"
+                    src={`${import.meta.env.BASE_URL}logo-lnd.png`}
+                    alt="LND Logo"
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div>
                   <h1 className="text-lg font-bold text-blue-900">
-                    Federazione Italiana Giuoco Calcio
+                    Rapporto Gara - Pulcini 2025-2026
                   </h1>
-                  <p className="text-xs text-gray-600">Lega Nazionale Dilettanti - Del. Prov. PADOVA</p>
+                  <p className="text-xs text-gray-600">USMA Padova</p>
                 </div>
               </div>
               <button
@@ -136,7 +136,7 @@ const FIGCReport = ({ match, onBack }) => {
             
             <div className="bg-blue-50 border border-blue-200 rounded p-2 text-center">
               <h2 className="font-bold text-sm text-blue-900">{match.competition}</h2>
-              <p className="text-xs text-blue-800">ESORDIENTI 1° Anno 2014 - 9&gt;9 (sigla X1)</p>
+              <p className="text-xs text-blue-800">PULCINI 2025-2026</p>
             </div>
           </div>
 
@@ -496,7 +496,7 @@ const SignatureBox = ({ label, signature, onSave, height = 120, compact = false 
     const y = (e.clientY || e.touches?.[0]?.clientY) - rect.top;
     ctx.lineTo(x, y);
     ctx.strokeStyle = '#000';
-    ctx.lineWidth = 3; // Linea più spessa per vedere meglio
+    ctx.lineWidth = 3;
     ctx.lineCap = 'round';
     ctx.stroke();
     setHasSignature(true);
