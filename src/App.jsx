@@ -354,8 +354,8 @@ const HomeScreen = ({
           <div className="flex items-center gap-3 mb-8">
             <div className="w-16 h-16 rounded-full overflow-hidden bg-white flex items-center justify-center border-2 border-slate-200">
               <img
-                src={`${import.meta.env.BASE_URL}logo-vigontina.png`}
-                alt="Logo Vigontina San Paolo"
+                src={`${import.meta.env.BASE_URL}logo-usma.png`}
+                alt="Logo USMA Padova"
                 className="w-full h-full object-cover"
                 loading="lazy"
                 decoding="async"
@@ -363,7 +363,7 @@ const HomeScreen = ({
             </div>
             <div>
               <h1 className="text-xl font-semibold text-gray-800">
-                Vigontina San Paolo
+                USMA Padova
               </h1>
               <p className="text-sm text-gray-600">Esordienti 2025-2026</p>
             </div>
@@ -407,7 +407,7 @@ const HomeScreen = ({
               <div className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="text-center flex-1">
-                    <p className="text-xs text-gray-600">Vigontina</p>
+                    <p className="text-xs text-gray-600">USMA Padova</p>
                     <p className="text-3xl font-bold">
                       {calculatePoints(lastPlayedMatch, "vigontina")}
                     </p>
