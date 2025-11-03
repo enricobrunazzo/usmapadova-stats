@@ -10,9 +10,9 @@ const FIGCReport = ({ match, onBack }) => {
     
     // Dati gara
     refereeManager: match.assistantReferee || '',
-    refereeSociety: 'Vigontina San Paolo',
-    homeTeam: match.isHome ? 'VIGONTINA SAN PAOLO' : match.opponent,
-    awayTeam: match.isHome ? match.opponent : 'VIGONTINA SAN PAOLO',
+    refereeSociety: 'USMA Padova',
+    homeTeam: match.isHome ? 'USMA PADOVA' : match.opponent,
+    awayTeam: match.isHome ? match.opponent : 'USMA PADOVA',
     matchDay: match.matchDay || '',
     girone: '',
     date: match.date,
@@ -113,8 +113,8 @@ const FIGCReport = ({ match, onBack }) => {
               <div className="flex items-center gap-2">
                 <div className="w-10 h-10 rounded-full overflow-hidden bg-white flex items-center justify-center border-2 border-blue-200">
                   <img
-                    src={`${import.meta.env.BASE_URL}logo-lnd.png`}
-                    alt="LND Logo"
+                    src={`${import.meta.env.BASE_URL}logo-usma.png`}
+                    alt="USMA Padova Logo"
                     className="w-full h-full object-cover"
                   />
                 </div>
