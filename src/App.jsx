@@ -365,7 +365,7 @@ const HomeScreen = ({
               <h1 className="text-xl font-semibold text-gray-800">
                 USMA Padova
               </h1>
-              <p className="text-sm text-gray-600">Esordienti 2025-2026</p>
+              <p className="text-sm text-gray-600">pulcini 2025-2026</p>
             </div>
           </div>
 
@@ -407,7 +407,7 @@ const HomeScreen = ({
               <div className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="text-center flex-1">
-                    <p className="text-xs text-gray-600">USMA Padova</p>
+                    <p className="text-xs text.gray-600">USMA Padova</p>
                     <p className="text-3xl font-bold">
                       {calculatePoints(lastPlayedMatch, "vigontina")}
                     </p>
