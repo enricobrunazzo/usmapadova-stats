@@ -1,4 +1,4 @@
-# Vigontina Stats
+# USMA PADOVA Stats
 
 Applicazione per la gestione live delle statistiche partita della Vigontina San Paolo.
 
