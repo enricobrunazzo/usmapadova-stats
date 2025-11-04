@@ -1,4 +1,4 @@
-// components/MatchOverview.jsx (shared viewer hides action buttons)
+// components/MatchOverview.jsx (controls always visible; removed viewer gating)
 import React from "react";
 import { ArrowLeft, Download, FileText, ClipboardCheck, Users } from "lucide-react";
 import { calculatePoints, calculateTotalGoals } from "../utils/matchUtils";
@@ -16,11 +16,7 @@ const MatchOverview = ({
   onFIGCReport,
   isTimerRunning,
   onBack,
-  isShared = false,
-  userRole = 'viewer',
 }) => {
-  const isViewer = isShared && userRole !== 'organizer';
-
   const lineupCount = (p) => Array.isArray(p.lineup) ? p.lineup.length : 0;
   const lineupBadge = (p) => {
     const count = lineupCount(p);
@@ -41,7 +37,7 @@ const MatchOverview = ({
           className="text-primary hover:text-primary-dark flex items-center gap-2"
         >
           <ArrowLeft className="w-5 h-5" />
-          {isViewer ? 'Torna alla Home' : 'Abbandona Partita'}
+          Abbandona Partita
         </button>
 
         <div className="bg-white rounded-lg shadow-lg p-6">
@@ -77,7 +73,7 @@ const MatchOverview = ({
                 <div className="text-center">
                   <p className="text-xs opacity-90">Punti</p>
                   <p className="text-4xl font-bold">
-                    {calculatePoints(match, "vigontina")}
+                    {calculatePoints(match, "usma")}
                   </p>
                 </div>
                 <span className="text-2xl">-</span>
@@ -89,7 +85,7 @@ const MatchOverview = ({
                 </div>
               </div>
               <p className="text-xs opacity-90 mt-2">
-                Gol: {calculateTotalGoals(match, "vigontina")} - {" "}
+                Gol: {calculateTotalGoals(match, "usma")} - {" "}
                 {calculateTotalGoals(match, "opponent")}
               </p>
             </div>
@@ -115,22 +111,20 @@ const MatchOverview = ({
                           {!isPT && lineupBadge(period)}
                         </h3>
                         <p className="text-sm text-neutral-600">
-                          {period.vigontina} - {period.opponent}
+                          {period.usma ?? 0} - {period.opponent ?? 0}
                           {period.goals && period.goals.length > 0 && ` (${period.goals.length} eventi)`}
                         </p>
                       </div>
                     </div>
                     {!completed ? (
-                      !isViewer && (
-                        <button
-                          onClick={() => onStartPeriod(idx)}
-                          disabled={!canPlay}
-                          className={`px-3 py-1 rounded text-sm ${canPlay ? 'bg-primary text-white hover:bg-primary-dark' : 'bg-neutral-200 text-neutral-500 cursor-not-allowed'}`}
-                          title={canPlay? (isPT? 'Inizia' : 'Gioca') : `Seleziona ${REQUIRED_ON_FIELD} giocatori`}
-                        >
-                          {isPT ? "Inizia" : "Gioca"}
-                        </button>
-                      )
+                      <button
+                        onClick={() => onStartPeriod(idx)}
+                        disabled={!canPlay}
+                        className={`px-3 py-1 rounded text-sm ${canPlay ? 'bg-primary text-white hover:bg-primary-dark' : 'bg-neutral-200 text-neutral-500 cursor-not-allowed'}`}
+                        title={canPlay? (isPT? 'Inizia' : 'Gioca') : `Seleziona ${REQUIRED_ON_FIELD} giocatori`}
+                      >
+                        {isPT ? "Inizia" : "Gioca"}
+                      </button>
                     ) : (
                       <button
                         onClick={() => onViewPeriod(idx)}
@@ -164,45 +158,29 @@ const MatchOverview = ({
             </div>
           </div>
 
-          {/* Azione unica sotto Dettagli */}
-          <button
-            onClick={onSummary}
-            className="w-full border border-primary text-primary py-2 rounded hover:bg-primary-light flex items-center justify-center gap-2 text-sm mb-3"
-          >
-            <FileText className="w-4 h-4" />
-            Riepilogo
-          </button>
-
-          {/* PULSANTI EXCEL E PDF SPOSTATI PRIMA DI SALVA PARTITA */}
-          {!isViewer && (
-            <div className="space-y-2">
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  onClick={onExportExcel}
-                  className="bg-secondary text-neutral-900 py-2 rounded hover:bg-secondary-dark flex items-center justify-center gap-2 text-sm"
-                >
-                  <Download className="w-4 h-4" /> Excel
-                </button>
-                <button
-                  onClick={onExportPDF}
-                  className="bg-primary text-white py-2 rounded hover:bg-primary-dark flex items-center justify-center gap-2 text-sm"
-                >
-                  <Download className="w-4 h-4" /> PDF
-                </button>
-              </div>
-              
+          {/* Azioni */}
+          <div className="space-y-2">
+            <div className="grid grid-cols-2 gap-3">
               <button
-                onClick={onSave}
-                className="w-full bg-primary text-white py-2 rounded hover:bg-primary-dark font-medium flex items-center justify-center gap-2 text-sm"
+                onClick={onExportExcel}
+                className="bg-secondary text-neutral-900 py-2 rounded hover:bg-secondary-dark flex items-center justify-center gap-2 text-sm"
               >
-                Salva Partita
+                <Download className="w-4 h-4" /> Excel
+              </button>
+              <button
+                onClick={onExportPDF}
+                className="bg-primary text-white py-2 rounded hover:bg-primary-dark flex items-center justify-center gap-2 text-sm"
+              >
+                <Download className="w-4 h-4" /> PDF
               </button>
             </div>
-          )}
-
-          {isViewer && (
-            <div className="mt-3 text-sm text-neutral-600 text-center">Modalità condivisa: visualizzazione sola lettura.</div>
-          )}
+            <button
+              onClick={onSave}
+              className="w-full bg-primary text-white py-2 rounded hover:bg-primary-dark font-medium flex items-center justify-center gap-2 text-sm"
+            >
+              Salva Partita
+            </button>
+          </div>
         </div>
       </div>
     </div>
