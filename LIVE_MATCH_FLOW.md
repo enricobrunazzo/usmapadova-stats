@@ -1,6 +1,6 @@
 # Flusso Partita Live Semplificato
 
-Questo documento descrive il nuovo flusso semplificato per la gestione delle partite live nel sistema Vigontina Stats.
+Questo documento descrive il nuovo flusso semplificato per la gestione delle partite live nel sistema USMA Padova Stats.
 
 ## Panoramica
 
@@ -82,7 +82,7 @@ Il nuovo sistema elimina la complessità della scelta tra partite locali e condi
 
 ### Home senza partita attiva
 ```
-[Logo Vigontina San Paolo]
+[Logo USMA Padova]
 [Statistiche stagione]
 [Ultima partita giocata]
 [Nuova Partita] [Storico Partite]
@@ -90,11 +90,11 @@ Il nuovo sistema elimina la complessità della scelta tra partite locali e condi
 
 ### Home con partita attiva
 ```
-[Logo Vigontina San Paolo]
+[Logo USMA Padova]
 
 ┌─ PARTITA IN CORSO ────────────┐
 │ 🔴 LIVE                       │
-│ Vigontina vs Avversario       │
+│ USMA Padova vs Avversario     │
 │        2 - 1                  │
 │ Ultimi eventi:                │
 │ • 15' Gol: 10 Mario Rossi     │
