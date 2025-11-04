@@ -409,7 +409,7 @@ const HomeScreen = ({
                   <div className="text-center flex-1">
                     <p className="text-xs text-gray-600">USMA Padova</p>
                     <p className="text-3xl font-bold">
-                      {calculatePoints(lastPlayedMatch, "vigontina")}
+                      {calculatePoints(lastPlayedMatch, "usma")}
                     </p>
                   </div>
                   <span className="px-3 text-gray-400">-</span>
