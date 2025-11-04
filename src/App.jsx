@@ -18,7 +18,7 @@ import FIGCReport from "./components/FIGCReport";
 import { exportMatchToExcel, exportMatchToPDF, exportHistoryToExcel } from "./utils/exportUtils";
 import { calculatePoints } from "./utils/matchUtils";
 
-const VigontinaStats = () => {
+const USMAPadovaStats = () => {
   // Routing
   const [page, setPage] = useState("home");
   const [selectedHistoryMatch, setSelectedHistoryMatch] = useState(null);
@@ -450,4 +450,4 @@ const HomeScreen = ({
   );
 };
 
-export default VigontinaStats;
+export default USMAPadovaStats;
