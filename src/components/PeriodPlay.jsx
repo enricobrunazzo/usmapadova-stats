@@ -168,7 +168,7 @@ const PeriodPlay = ({
           {/* BARRA CONTROLLI SUPERIORE - solo tempi normali */}
           {!isProvaTecnica && !isViewer && (
             <div className="flex justify-end -mt-2 mb-4 gap-2">
-              <button onClick={() => setShowLineupDialog(true)} className="text-xs px=2 py-1 rounded bg-gray-100 hover:bg-gray-200 border border-gray-200" title={`Modifica i ${REQUIRED_ON_FIELD} in campo`}>👥 {REQUIRED_ON_FIELD} in campo</button>
+              <button onClick={() => setShowLineupDialog(true)} className="text-xs px-2 py-1 rounded bg-gray-100 hover:bg-gray-200 border border-gray-200" title={`Modifica i ${REQUIRED_ON_FIELD} in campo`}>👥 {REQUIRED_ON_FIELD} in campo</button>
               <button onClick={() => setManualScoreMode((m) => !m)} className={`text-xs px-2 py-1 rounded border ${manualScoreMode? "bg-yellow-100 border-yellow-300 text-yellow-800" : "bg-gray-50 border-gray-200 text-gray-700"}`} title="Attiva/Disattiva modifica manuale punteggio">{manualScoreMode? "✅ Modifica punteggio attiva" : "✏️ Modifica punteggio"}</button>
             </div>
           )}
@@ -177,10 +177,10 @@ const PeriodPlay = ({
           {isProvaTecnica ? (
             <ProvaTecnicaPanel
               opponentName={match.opponent}
-              vigScore={period.usma || 0}
+              usmaScore={period.usma || 0}
               oppScore={period.opponent || 0}
-              onVigMinus={() => onUpdateScore?.('usma', -1)}
-              onVigPlus={() => onUpdateScore?.('usma', 1)}
+              onUsmaMinus={() => onUpdateScore?.('usma', -1)}
+              onUsmaPlus={() => onUpdateScore?.('usma', 1)}
               onOppMinus={() => onUpdateScore?.('opponent', -1)}
               onOppPlus={() => onUpdateScore?.('opponent', 1)}
               onFinish={onFinish}
