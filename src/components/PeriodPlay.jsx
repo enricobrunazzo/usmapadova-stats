@@ -98,7 +98,7 @@ const PeriodPlay = ({
 
   const confirmShotForTeam = (team) => {
     setShowShotTeamDialog(false);
-    if (team === 'vigontina') {
+    if (team === 'usma') {
       setShowShotPlayerDialog(true);
     } else {
       if (pendingShotOutcome === 'fuori') onAddMissedShot('opponent', null);
@@ -110,9 +110,9 @@ const PeriodPlay = ({
 
   const confirmShotForPlayer = (playerNum) => {
     setShowShotPlayerDialog(false);
-    if (pendingShotOutcome === 'fuori') onAddMissedShot('vigontina', playerNum);
-    else if (pendingShotOutcome === 'parato') onAddShotBlocked('vigontina', playerNum);
-    else if (pendingShotOutcome === 'palo' || pendingShotOutcome === 'traversa') onAddPostCrossbar(pendingShotOutcome, 'vigontina', playerNum);
+    if (pendingShotOutcome === 'fuori') onAddMissedShot('usma', playerNum);
+    else if (pendingShotOutcome === 'parato') onAddShotBlocked('usma', playerNum);
+    else if (pendingShotOutcome === 'palo' || pendingShotOutcome === 'traversa') onAddPostCrossbar(pendingShotOutcome, 'usma', playerNum);
     setPendingShotOutcome(null);
   };
 
@@ -131,24 +131,22 @@ const PeriodPlay = ({
 
   const events = Array.isArray(period.goals) ? period.goals : [];
   const organizedEvents = useMemo(() => {
-    const vigontinaEvents = [];
+    const usmaEvents = [];
     const opponentEvents = [];
     events.forEach((event, idx) => {
       const e = { ...event, originalIndex: idx };
       if (
         ['goal','penalty-goal','penalty-missed','save','missed-shot','shot-blocked','substitution','free-kick-missed','free-kick-saved','free-kick-hit'].includes(event.type)
         || event.type === 'opponent-own-goal'
-        || event.type === 'palo-vigontina'
-        || event.type === 'traversa-vigontina'
-        || ((event.type?.includes('palo-') || event.type?.includes('traversa-')) && event.team==='vigontina')
+        || event.team === 'usma'
       ) {
-        vigontinaEvents.push(e);
+        usmaEvents.push(e);
       } else {
         opponentEvents.push(e);
       }
     });
     const sortByMinute = (a,b) => (a.minute||0)-(b.minute||0);
-    return { vigontina: vigontinaEvents.sort(sortByMinute), opponent: opponentEvents.sort(sortByMinute) };
+    return { usma: usmaEvents.sort(sortByMinute), opponent: opponentEvents.sort(sortByMinute) };
   }, [events]);
 
   const canFinish = isProvaTecnica || isLineupValid;
@@ -170,7 +168,7 @@ const PeriodPlay = ({
           {/* BARRA CONTROLLI SUPERIORE - solo tempi normali */}
           {!isProvaTecnica && !isViewer && (
             <div className="flex justify-end -mt-2 mb-4 gap-2">
-              <button onClick={() => setShowLineupDialog(true)} className="text-xs px-2 py-1 rounded bg-gray-100 hover:bg-gray-200 border border-gray-200" title={`Modifica i ${REQUIRED_ON_FIELD} in campo`}>👥 {REQUIRED_ON_FIELD} in campo</button>
+              <button onClick={() => setShowLineupDialog(true)} className="text-xs px=2 py-1 rounded bg-gray-100 hover:bg-gray-200 border border-gray-200" title={`Modifica i ${REQUIRED_ON_FIELD} in campo`}>👥 {REQUIRED_ON_FIELD} in campo</button>
               <button onClick={() => setManualScoreMode((m) => !m)} className={`text-xs px-2 py-1 rounded border ${manualScoreMode? "bg-yellow-100 border-yellow-300 text-yellow-800" : "bg-gray-50 border-gray-200 text-gray-700"}`} title="Attiva/Disattiva modifica manuale punteggio">{manualScoreMode? "✅ Modifica punteggio attiva" : "✏️ Modifica punteggio"}</button>
             </div>
           )}
@@ -179,10 +177,10 @@ const PeriodPlay = ({
           {isProvaTecnica ? (
             <ProvaTecnicaPanel
               opponentName={match.opponent}
-              vigScore={period.vigontina || 0}
+              vigScore={period.usma || 0}
               oppScore={period.opponent || 0}
-              onVigMinus={() => onUpdateScore?.('vigontina', -1)}
-              onVigPlus={() => onUpdateScore?.('vigontina', 1)}
+              onVigMinus={() => onUpdateScore?.('usma', -1)}
+              onVigPlus={() => onUpdateScore?.('usma', 1)}
               onOppMinus={() => onUpdateScore?.('opponent', -1)}
               onOppPlus={() => onUpdateScore?.('opponent', 1)}
               onFinish={onFinish}
@@ -196,16 +194,16 @@ const PeriodPlay = ({
                   <div className="flex items-center justify-center gap-4">
                     <div className="text-center flex items-center gap-2">
                       {manualScoreMode && !isViewer && (
-                        <button onClick={() => onUpdateScore?.('vigontina', -1)} className="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600" disabled={(period.vigontina || 0) <= 0}>
+                        <button onClick={() => onUpdateScore?.('usma', -1)} className="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600" disabled={(period.usma || 0) <= 0}>
                           <Minus className="w-3 h-3" />
                         </button>
                       )}
                       <div>
                         <p className="text-xs text-gray-500">USMA Padova</p>
-                        <p className="text-3xl font-bold text-green-600">{period.vigontina || 0}</p>
+                        <p className="text-3xl font-bold text-green-600">{period.usma || 0}</p>
                       </div>
                       {manualScoreMode && !isViewer && (
-                        <button onClick={() => onUpdateScore?.('vigontina', 1)} className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-green-600">
+                        <button onClick={() => onUpdateScore?.('usma', 1)} className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-green-600">
                           <Plus className="w-3 h-3" />
                         </button>
                       )}
@@ -270,11 +268,11 @@ const PeriodPlay = ({
               )}
 
               {/* EVENTI ORGANIZZATI */}
-              {(organizedEvents.vigontina.length > 0 || organizedEvents.opponent.length > 0) && (
+              {(organizedEvents.usma.length > 0 || organizedEvents.opponent.length > 0) && (
                 <div className="mb-6 grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    {organizedEvents.vigontina.map((event) => (
-                      <TeamEventCard key={event.originalIndex} event={event} team="vigontina" opponentName={match.opponent} />
+                    {organizedEvents.usma.map((event) => (
+                      <TeamEventCard key={event.originalIndex} event={event} team="usma" opponentName={match.opponent} />
                     ))}
                   </div>
                   <div className="space-y-2">
@@ -420,26 +418,26 @@ const TeamEventCard = ({ event, team, opponentName }) => {
     );
   }
   if (event.type.includes('penalty') && event.type.includes('missed')) {
-    const isVig = event.type === 'penalty-missed';
+    const isUsma = event.type === 'penalty-missed';
     return grayCard(
       <p className="font-medium text-gray-800">
-        ❌ {event.minute}' - Rigore fallito {isVig ? 'USMA Padova' : opponentName}
+        ❌ {event.minute}' - Rigore fallito {isUsma ? 'USMA Padova' : opponentName}
         <Badge color="purple">RIG.</Badge>
       </p>
     );
   }
   if (event.type === "missed-shot" || event.type === "opponent-missed-shot") {
-    const isVig = event.type === 'missed-shot';
-    return grayCard(<p className="font-medium text-gray-800">🎯 {event.minute}' - Tiro fuori {isVig ? `${event.player} ${event.playerName}` : opponentName}</p>);
+    const isUsma = event.type === 'missed-shot';
+    return grayCard(<p className="font-medium text-gray-800">🎯 {event.minute}' - Tiro fuori {isUsma ? `${event.player} ${event.playerName}` : opponentName}</p>);
   }
   if (event.type === "shot-blocked" || event.type === "opponent-shot-blocked") {
-    const isVig = event.type === 'shot-blocked';
-    return grayCard(<p className="font-medium text-gray-800">🧤 {event.minute}' - {isVig ? `${event.player} ${event.playerName}` : opponentName} tiro parato</p>);
+    const isUsma = event.type === 'shot-blocked';
+    return grayCard(<p className="font-medium text-gray-800">🧤 {event.minute}' - {isUsma ? `${event.player} ${event.playerName}` : opponentName} tiro parato</p>);
   }
   if (event.type?.includes('palo-') || event.type?.includes('traversa-')) {
-    const isVig = event.team === 'vigontina';
+    const isUsma = event.team === 'usma';
     const hitTypeDisplay = event.hitType === 'palo' ? '🧱 Palo' : '⎯ Traversa';
-    return grayCard(<p className="font-medium text-gray-800">{hitTypeDisplay} {event.minute}' - {isVig ? `${event.player} ${event.playerName}` : opponentName}</p>);
+    return grayCard(<p className="font-medium text-gray-800">{hitTypeDisplay} {event.minute}' - {isUsma ? `${event.player} ${event.playerName}` : opponentName}</p>);
   }
   if (event.type?.startsWith('free-kick')) {
     const isOpp = event.type.includes('opponent');
