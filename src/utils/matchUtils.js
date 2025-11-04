@@ -19,7 +19,7 @@ const getEffectivePeriods = (match) =>
 /**
  * Calcola i punti totali per una squadra (regola: win=1, draw=1, loss=0).
  * @param {Object} match - Oggetto partita
- * @param {string} team - 'vigontina' | 'opponent'
+ * @param {string} team - 'usma' | 'opponent'
  * @returns {number}
  */
 export const calculatePoints = (match, team) => {
@@ -27,13 +27,13 @@ export const calculatePoints = (match, team) => {
   let points = 0;
 
   for (const period of getEffectivePeriods(match)) {
-    const v = safeNumber(period.vigontina);
+    const v = safeNumber(period.usma);
     const o = safeNumber(period.opponent);
 
     if (v === o) {
       points += 1; // pareggio: 1 punto ad entrambe
     } else if (v > o) {
-      points += team === "vigontina" ? 1 : 0;
+      points += team === "usma" ? 1 : 0;
     } else {
       points += team === "opponent" ? 1 : 0;
     }
@@ -45,16 +45,16 @@ export const calculatePoints = (match, team) => {
 /**
  * Calcola i gol totali per una squadra (escludendo la PROVA TECNICA)
  * @param {Object} match
- * @param {string} team - 'vigontina' | 'opponent'
+ * @param {string} team - 'usma' | 'opponent'
  * @returns {number}
  */
 export const calculateTotalGoals = (match, team) => {
   if (!match || !match.periods) return 0;
 
   return getEffectivePeriods(match).reduce((sum, period) => {
-    const v = safeNumber(period.vigontina);
+    const v = safeNumber(period.usma);
     const o = safeNumber(period.opponent);
-    return sum + (team === "vigontina" ? v : o);
+    return sum + (team === "usma" ? v : o);
   }, 0);
 };
 
@@ -72,9 +72,9 @@ export const calculateMatchStats = (match) => {
       ownGoalsCount: 0,
       penaltiesScored: 0,
       penaltiesMissed: 0,
-      vigontinaGoals: 0,
+      usmaGoals: 0,
       opponentGoals: 0,
-      vigontinaPoints: 0,
+      usmaPoints: 0,
       opponentPoints: 0,
     };
   }
@@ -117,22 +117,22 @@ export const calculateMatchStats = (match) => {
         break;
       }
       case "penalty-missed": {
-        if (event.team === "vigontina") penaltiesMissed += 1;
+        if (event.team === "usma") penaltiesMissed += 1;
         break;
       }
       case "own-goal": {
         ownGoalsCount += 1;
         break;
       }
-      // Eventi dell'avversario non impattano marcatori/assist della Vigontina
+      // Eventi dell'avversario non impattano marcatori/assist dell'USMA
       default:
         break;
     }
   }
 
-  const vigontinaGoals = calculateTotalGoals(match, "vigontina");
+  const usmaGoals = calculateTotalGoals(match, "usma");
   const opponentGoals = calculateTotalGoals(match, "opponent");
-  const vigontinaPoints = calculatePoints(match, "vigontina");
+  const usmaPoints = calculatePoints(match, "usma");
   const opponentPoints = calculatePoints(match, "opponent");
 
   return {
@@ -142,9 +142,9 @@ export const calculateMatchStats = (match) => {
     ownGoalsCount,
     penaltiesScored,
     penaltiesMissed,
-    vigontinaGoals,
+    usmaGoals,
     opponentGoals,
-    vigontinaPoints,
+    usmaPoints,
     opponentPoints,
   };
 };
@@ -155,10 +155,10 @@ export const calculateMatchStats = (match) => {
  * @returns {{isWin:boolean,isDraw:boolean,isLoss:boolean,resultText:string,resultColor:string,resultBg:string}}
  */
 export const getMatchResult = (match) => {
-  const vigontinaPoints = calculatePoints(match, "vigontina");
+  const usmaPoints = calculatePoints(match, "usma");
   const opponentPoints = calculatePoints(match, "opponent");
-  const isWin = vigontinaPoints > opponentPoints;
-  const isDraw = vigontinaPoints === opponentPoints;
+  const isWin = usmaPoints > opponentPoints;
+  const isDraw = usmaPoints === opponentPoints;
 
   return {
     isWin,
@@ -185,7 +185,7 @@ export const createMatchStructure = (matchData) => {
     ...matchData,
     periods: periods.map((name) => ({
       name,
-      vigontina: 0,
+      usma: 0,
       opponent: 0,
       goals: [],
       completed: false,
