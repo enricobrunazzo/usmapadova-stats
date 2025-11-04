@@ -6,33 +6,33 @@ const LineupModal = ({ availablePlayers, initialLineup = [], onConfirm, onCancel
   // Se availablePlayers non è passato, ricava dai PLAYERS globali esclusi i non convocati (fallback)
   const candidates = useMemo(() => (availablePlayers && availablePlayers.length ? availablePlayers : PLAYERS), [availablePlayers]);
 
-  const [selected, setSelected] = useState(initialLineup.slice(0, 9));
+  const [selected, setSelected] = useState(initialLineup.slice(0, 7));
 
   const toggle = (num) => {
     setSelected((prev) => {
       const exists = prev.includes(num);
       if (exists) return prev.filter((n) => n !== num);
-      if (prev.length >= 9) return prev; // limite 9
+      if (prev.length >= 7) return prev; // limite 7 per partite 7vs7
       return [...prev, num];
     });
   };
 
   const confirm = () => {
-    if (selected.length !== 9) {
-      alert("Seleziona esattamente 9 giocatori.");
+    if (selected.length !== 7) {
+      alert("Seleziona esattamente 7 giocatori.");
       return;
     }
     onConfirm?.(selected);
   };
 
   const isSelected = (num) => selected.includes(num);
-  const disabledAdd = (num) => !isSelected(num) && selected.length >= 9;
+  const disabledAdd = (num) => !isSelected(num) && selected.length >= 7;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg p-6 w-full max-w-xl max-h-[85vh] overflow-y-auto">
-        <h3 className="text-lg font-semibold mb-1 text-center">Seleziona i 9 in campo</h3>
-        <p className="text-xs text-gray-600 mb-3 text-center">Selezionati: {selected.length}/9</p>
+        <h3 className="text-lg font-semibold mb-1 text-center">Seleziona i 7 in campo</h3>
+        <p className="text-xs text-gray-600 mb-3 text-center">Selezionati: {selected.length}/7</p>
 
         {/* Griglia stile selezione tiri: pulsanti rapidi numero+cognome */}
         <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
@@ -58,7 +58,7 @@ const LineupModal = ({ availablePlayers, initialLineup = [], onConfirm, onCancel
         {/* Azioni */}
         <div className="flex gap-2 mt-4">
           <button onClick={onCancel} className="flex-1 bg-gray-200 text-gray-800 py-2 rounded">Annulla</button>
-          <button onClick={confirm} className={`flex-1 py-2 rounded text-white ${selected.length===9? 'bg-blue-600 hover:bg-blue-700':'bg-blue-300 cursor-not-allowed'}`}>Conferma ({selected.length})</button>
+          <button onClick={confirm} className={`flex-1 py-2 rounded text-white ${selected.length===7? 'bg-blue-600 hover:bg-blue-700':'bg-blue-300 cursor-not-allowed'}`}>Conferma ({selected.length})</button>
         </div>
       </div>
     </div>
