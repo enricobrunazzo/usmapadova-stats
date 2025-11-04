@@ -1,15 +1,15 @@
 # USMA PADOVA Stats
 
-Applicazione per la gestione live delle statistiche partita della Vigontina San Paolo.
+Applicazione per la gestione live delle statistiche partita di USMA Padova.
 
 ## Novità (Ottobre 2025)
 
 - Sezione "Azioni Salienti" durante il live match con tre azioni rapide:
-  - 🧤 Parata (scelta squadra; se Vigontina, selezione portiere)
-  - 🎯 Tiro Fuori (scelta squadra; se Vigontina, selezione giocatore)
-  - 🧱 Palo/Traversa (icona neutra "🧱"; scelta tra Palo o Traversa nel modal; scelta squadra; se Vigontina, selezione giocatore)
+  - 🧤 Parata (scelta squadra; se USMA Padova, selezione portiere)
+  - 🎯 Tiro Fuori (scelta squadra; se USMA Padova, selezione giocatore)
+  - 🧱 Palo/Traversa (icona neutra "🧱"; scelta tra Palo o Traversa nel modal; scelta squadra; se USMA Padova, selezione giocatore)
 - Layout pulsanti riorganizzato per velocità in live:
-  - Riga 1: Gol Vigontina | Gol Avversario
+  - Riga 1: Gol USMA Padova | Gol Avversario
   - Riga 2: Autogol | Rigore
   - Riga 3: Azioni Salienti (Parata | Tiro Fuori | Palo/Traversa)
 - Lista eventi aggiornata con icone e colori dedicati per ogni azione.
@@ -25,13 +25,13 @@ Applicazione per la gestione live delle statistiche partita della Vigontina San 
 
 ## Dettaglio Eventi
 
-- Gol Vigontina: selezione marcatore (+ assist opzionale)
+- Gol USMA Padova: selezione marcatore (+ assist opzionale)
 - Gol Avversario: inserimento diretto
 - Autogol: scelta squadra (il punto viene assegnato alla squadra avversaria)
-- Rigore: scelta squadra, esito (gol/fallito), marcatore se Vigontina
-- Parata: scelta squadra; se Vigontina, selezione portiere
-- Tiro Fuori: scelta squadra; se Vigontina, selezione giocatore
-- Palo/Traversa: scelta tra Palo/Traversa, scelta squadra; se Vigontina, selezione giocatore
+- Rigore: scelta squadra, esito (gol/fallito), marcatore se USMA Padova
+- Parata: scelta squadra; se USMA Padova, selezione portiere
+- Tiro Fuori: scelta squadra; se USMA Padova, selezione giocatore
+- Palo/Traversa: scelta tra Palo/Traversa, scelta squadra; se USMA Padova, selezione giocatore
 
 ## Note UI
 
