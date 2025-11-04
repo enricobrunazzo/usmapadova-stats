@@ -5,6 +5,7 @@ import { realtimeDb } from "../config/firebase";
 import { getActiveMatchCode } from "./cloudPersistence";
 
 const TIMER_DURATION = 1200; // 20 minuti in secondi
+const ALERT_AT = 900; // 15 minuti (fine tempo ufficiale pulcini)
 
 export const useTimer = () => {
   const [timerSeconds, setTimerSeconds] = useState(0);
@@ -12,6 +13,7 @@ export const useTimer = () => {
   const [timerStartTime, setTimerStartTime] = useState(null);
   const timerRef = useRef(null);
   const wakeLockRef = useRef(null);
+  const alertedRef = useRef(false);
 
   // Helpers RTDB
   const getTimerRef = useCallback(() => {
@@ -83,6 +85,7 @@ export const useTimer = () => {
     const startTime = Date.now() - timerSeconds * 1000;
     setTimerStartTime(startTime);
     setIsTimerRunning(true);
+    alertedRef.current = false;
     saveTimerState(startTime, true);
   }, [timerSeconds, saveTimerState]);
 
@@ -95,6 +98,7 @@ export const useTimer = () => {
     setIsTimerRunning(false);
     setTimerSeconds(0);
     setTimerStartTime(null);
+    alertedRef.current = false;
     clearTimerState();
   }, [clearTimerState]);
 
@@ -111,12 +115,20 @@ export const useTimer = () => {
       requestWakeLock();
       timerRef.current = setInterval(() => {
         const elapsed = Math.floor((Date.now() - timerStartTime) / 1000);
+
+        // Avviso a 15:00
+        if (!alertedRef.current && elapsed >= ALERT_AT) {
+          alertedRef.current = true;
+          try { if (navigator.vibrate) navigator.vibrate([300, 150, 300]); } catch {}
+          alert("⏰ FINE TEMPO UFFICIALE (15')!\n\nPuoi proseguire fino a 20' per recupero.");
+        }
+
         if (elapsed >= TIMER_DURATION) {
           setTimerSeconds(TIMER_DURATION);
           setIsTimerRunning(false);
           clearTimerState();
           alert("⏰ FINE TEMPO!\n\nIl tempo è scaduto.");
-          if (navigator.vibrate) navigator.vibrate([500, 200, 500, 200, 500]);
+          try { if (navigator.vibrate) navigator.vibrate([500, 200, 500, 200, 500]); } catch {}
         } else {
           setTimerSeconds(elapsed);
         }

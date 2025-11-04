@@ -18,7 +18,7 @@ import FIGCReport from "./components/FIGCReport";
 import { exportMatchToExcel, exportMatchToPDF, exportHistoryToExcel } from "./utils/exportUtils";
 import { calculatePoints } from "./utils/matchUtils";
 
-const VigontinaStats = () => {
+const USMAPadovaStats = () => {
   // Routing
   const [page, setPage] = useState("home");
   const [selectedHistoryMatch, setSelectedHistoryMatch] = useState(null);
@@ -348,7 +348,7 @@ const HomeScreen = ({
   onViewLastMatch,
 }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-700 to-cyan-600 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#C22B2B] via-[#D6492F] to-[#F2C84B] p-4">
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-lg shadow-lg p-6">
           <div className="flex items-center gap-3 mb-8">
@@ -407,9 +407,9 @@ const HomeScreen = ({
               <div className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="text-center flex-1">
-                    <p className="text-xs text.gray-600">USMA Padova</p>
+                    <p className="text-xs text-gray-600">USMA Padova</p>
                     <p className="text-3xl font-bold">
-                      {calculatePoints(lastPlayedMatch, "vigontina")}
+                      {calculatePoints(lastPlayedMatch, "usma")}
                     </p>
                   </div>
                   <span className="px-3 text-gray-400">-</span>
@@ -422,7 +422,7 @@ const HomeScreen = ({
                 </div>
                 <button
                   onClick={() => onViewLastMatch(lastPlayedMatch)}
-                  className="w-full mt-3 bg-blue-500 text-white py-1 rounded hover:bg-blue-600 text-sm"
+                  className="w-full mt-3 bg-primary text-white py-1 rounded hover:bg-primary-dark text-sm"
                 >
                   Dettagli ultima partita
                 </button>
@@ -433,13 +433,13 @@ const HomeScreen = ({
           <div className="space-y-3">
             <button
               onClick={onNewMatch}
-              className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition text-base font-medium"
+              className="w-full bg-primary text-white py-2 rounded hover:bg-primary-dark transition text-base font-medium"
             >
               Nuova Partita
             </button>
             <button
               onClick={onViewHistory}
-              className="w-full bg-purple-500 text-white py-2 rounded hover:bg-purple-600 transition text-base font-medium"
+              className="w-full border border-primary text-primary py-2 rounded hover:bg-primary-light transition text-base font-medium"
             >
               Storico Partite ({stats.totalMatches})
             </button>
@@ -450,4 +450,4 @@ const HomeScreen = ({
   );
 };
 
-export default VigontinaStats;
+export default USMAPadovaStats;

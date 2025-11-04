@@ -305,7 +305,7 @@ const NewMatchForm = ({ onSubmit, onCancel, requestPassword = false }) => {
           {requestPassword && (
             <div className="mt-4 p-3 bg-gray-50 border rounded-lg">
               <p className="text-xs text-gray-600 text-center">
-                <strong>Suggerimento:</strong> La password è <code className="bg-gray-200 px-1 rounded">vigontina2025</code>
+                <strong>Suggerimento:</strong> La password è <code className="bg-gray-200 px-1 rounded">usma2025</code>
               </p>
             </div>
           )}
