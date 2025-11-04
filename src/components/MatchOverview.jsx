@@ -1,9 +1,7 @@
-// components/MatchOverview.jsx (controls always visible; removed viewer gating)
+// components/MatchOverview.jsx (replica comportamento vigontina-stats: Gioca sempre attivo, niente Imposta 7)
 import React from "react";
-import { ArrowLeft, Download, FileText, ClipboardCheck, Users } from "lucide-react";
+import { ArrowLeft, Download, FileText, ClipboardCheck } from "lucide-react";
 import { calculatePoints, calculateTotalGoals } from "../utils/matchUtils";
-
-const REQUIRED_ON_FIELD = 7;
 
 const MatchOverview = ({
   match,
@@ -17,35 +15,16 @@ const MatchOverview = ({
   isTimerRunning,
   onBack,
 }) => {
-  const lineupCount = (p) => Array.isArray(p.lineup) ? p.lineup.length : 0;
-  const lineupBadge = (p) => {
-    const count = lineupCount(p);
-    const ok = count === REQUIRED_ON_FIELD;
-    return (
-      <span title={`Formazione: ${count}/${REQUIRED_ON_FIELD}`}
-        className={`ml-2 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded border ${ok ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
-        <Users className="w-3 h-3" /> {count}/{REQUIRED_ON_FIELD}
-      </span>
-    );
-  };
-
   return (
     <div className="min-h-screen bg-neutral-50 p-4">
       <div className="max-w-2xl mx-auto space-y-4">
-        <button
-          onClick={onBack}
-          className="text-primary hover:text-primary-dark flex items-center gap-2"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          Abbandona Partita
+        <button onClick={onBack} className="text-primary hover:text-primary-dark flex items-center gap-2">
+          <ArrowLeft className="w-5 h-5" /> Abbandona Partita
         </button>
 
         <div className="bg-white rounded-lg shadow-lg p-6">
-          {/* Header con titolo */}
           <div className="flex items-center justify-between mb-2">
-            <h2 className="text-2xl font-bold text-neutral-900">
-              USMA Padova vs {match.opponent}
-            </h2>
+            <h2 className="text-2xl font-bold text-neutral-900">USMA Padova vs {match.opponent}</h2>
           </div>
 
           {isTimerRunning && (
@@ -54,11 +33,8 @@ const MatchOverview = ({
               LIVE
             </span>
           )}
-          
-          <p className="text-sm text-neutral-600 mb-2">
-            {match.isHome ? "🏠 Casa" : "✈️ Trasferta"}
-          </p>
-          
+
+          <p className="text-sm text-neutral-600 mb-2">{match.isHome ? "🏠 Casa" : "✈️ Trasferta"}</p>
           <p className="text-sm text-neutral-600 mb-4">
             {match.competition}
             {match.matchDay && ` - Giornata ${match.matchDay}`}
@@ -72,112 +48,72 @@ const MatchOverview = ({
               <div className="flex justify-center items-center gap-6">
                 <div className="text-center">
                   <p className="text-xs opacity-90">Punti</p>
-                  <p className="text-4xl font-bold">
-                    {calculatePoints(match, "usma")}
-                  </p>
+                  <p className="text-4xl font-bold">{calculatePoints(match, "usma")}</p>
                 </div>
                 <span className="text-2xl">-</span>
                 <div className="text-center">
                   <p className="text-xs opacity-90">Punti</p>
-                  <p className="text-4xl font-bold">
-                    {calculatePoints(match, "opponent")}
-                  </p>
+                  <p className="text-4xl font-bold">{calculateTotalGoals(match, "opponent") && calculatePoints(match, "opponent")}</p>
                 </div>
               </div>
               <p className="text-xs opacity-90 mt-2">
-                Gol: {calculateTotalGoals(match, "usma")} - {" "}
-                {calculateTotalGoals(match, "opponent")}
+                Gol: {calculateTotalGoals(match, "usma")} - {" "}{calculateTotalGoals(match, "opponent")}
               </p>
             </div>
           </div>
 
           <div className="space-y-2 mb-6">
-            {match.periods.map((period, idx) => {
-              const completed = !!period.completed;
-              const isPT = period.name === 'PROVA TECNICA';
-              const canPlay = isPT || lineupCount(period) === REQUIRED_ON_FIELD;
-              return (
-                <div
-                  key={idx}
-                  className={`border rounded-lg p-4 ${
-                    completed ? "bg-neutral-50" : "bg-white"
-                  }`}
-                >
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center">
-                      <div>
-                        <h3 className="font-semibold text-neutral-900 flex items-center">
-                          {period.name}
-                          {!isPT && lineupBadge(period)}
-                        </h3>
-                        <p className="text-sm text-neutral-600">
-                          {period.usma ?? 0} - {period.opponent ?? 0}
-                          {period.goals && period.goals.length > 0 && ` (${period.goals.length} eventi)`}
-                        </p>
-                      </div>
-                    </div>
-                    {!completed ? (
-                      <button
-                        onClick={() => onStartPeriod(idx)}
-                        disabled={!canPlay}
-                        className={`px-3 py-1 rounded text-sm ${canPlay ? 'bg-primary text-white hover:bg-primary-dark' : 'bg-neutral-200 text-neutral-500 cursor-not-allowed'}`}
-                        title={canPlay? (isPT? 'Inizia' : 'Gioca') : `Seleziona ${REQUIRED_ON_FIELD} giocatori`}
-                      >
-                        {isPT ? "Inizia" : "Gioca"}
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => onViewPeriod(idx)}
-                        className="border border-primary text-primary px-3 py-1 rounded hover:bg-primary-light flex items-center gap-1 text-sm"
-                      >
-                        <FileText className="w-3 h-3" />
-                        Dettagli
-                      </button>
-                    )}
+            {match.periods.map((period, idx) => (
+              <div key={idx} className={`border rounded-lg p-4 ${period.completed ? "bg-neutral-50" : "bg-white"}`}>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="font-semibold text-neutral-900">{period.name}</h3>
+                    <p className="text-sm text-neutral-600">
+                      {(period.usma ?? 0)} - {(period.opponent ?? 0)}
+                      {period.goals && period.goals.length > 0 && ` (${period.goals.length} eventi)`}
+                    </p>
                   </div>
+                  {!period.completed ? (
+                    <button onClick={() => onStartPeriod(idx)} className="px-3 py-1 rounded text-sm bg-primary text-white hover:bg-primary-dark">
+                      {period.name === "PROVA TECNICA" ? "Inizia" : "Gioca"}
+                    </button>
+                  ) : (
+                    <button onClick={() => onViewPeriod(idx)} className="border border-primary text-primary px-3 py-1 rounded hover:bg-primary-light flex items-center gap-1 text-sm">
+                      <FileText className="w-3 h-3" /> Dettagli
+                    </button>
+                  )}
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
 
-          {/* Rapporto FIGC */}
           <div className="mb-6 bg-secondary-light border-2 border-secondary-dark rounded-lg p-4">
             <div className="flex items-start gap-3">
               <ClipboardCheck className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
               <div className="flex-1">
                 <h3 className="font-semibold text-neutral-900 mb-1">Rapporto Gara FIGC</h3>
                 <p className="text-xs text-neutral-600 mb-3">Compila il rapporto gara ufficiale da inviare alla Delegazione Provinciale di Padova</p>
-                <button
-                  onClick={onFIGCReport}
-                  className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark flex items-center justify-center gap-2 text-sm font-medium"
-                >
-                  <ClipboardCheck className="w-4 h-4" />
-                  Compila Rapporto FIGC
+                <button onClick={onFIGCReport} className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark flex items-center justify-center gap-2 text-sm font-medium">
+                  <ClipboardCheck className="w-4 h-4" /> Compila Rapporto FIGC
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Azioni */}
+          <button onClick={onSummary} className="w-full border border-primary text-primary py-2 rounded hover:bg-primary-light flex items-center justify-center gap-2 text-sm mb-3">
+            <FileText className="w-4 h-4" /> Riepilogo
+          </button>
+
           <div className="space-y-2">
             <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={onExportExcel}
-                className="bg-secondary text-neutral-900 py-2 rounded hover:bg-secondary-dark flex items-center justify-center gap-2 text-sm"
-              >
+              <button onClick={onExportExcel} className="bg-secondary text-neutral-900 py-2 rounded hover:bg-secondary-dark flex items-center justify-center gap-2 text-sm">
                 <Download className="w-4 h-4" /> Excel
               </button>
-              <button
-                onClick={onExportPDF}
-                className="bg-primary text-white py-2 rounded hover:bg-primary-dark flex items-center justify-center gap-2 text-sm"
-              >
+              <button onClick={onExportPDF} className="bg-primary text-white py-2 rounded hover:bg-primary-dark flex items-center justify-center gap-2 text-sm">
                 <Download className="w-4 h-4" /> PDF
               </button>
             </div>
-            <button
-              onClick={onSave}
-              className="w-full bg-primary text-white py-2 rounded hover:bg-primary-dark font-medium flex items-center justify-center gap-2 text-sm"
-            >
+            <button onClick={onSave} className="w-full bg-primary text-white py-2 rounded hover:bg-primary-dark font-medium flex items-center justify-center gap-2 text-sm">
               Salva Partita
             </button>
           </div>

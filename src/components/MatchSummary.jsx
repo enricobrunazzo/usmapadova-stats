@@ -1,4 +1,4 @@
-// components/MatchSummary.jsx
+// components/MatchSummary.jsx (USMA labels and event mapping updated)
 import React, { useMemo, useState } from "react";
 import { ArrowLeft, Download, FileText, Users } from "lucide-react";
 import { PLAYERS } from "../constants/players";
@@ -17,27 +17,23 @@ const MatchSummary = ({ match, onBack, onExportExcel, onExportPDF, onFIGCReport 
     if (!match.periods) return [];
     return match.periods.map((period, periodIdx) => {
       const events = period.goals || [];
-      const vigontinaEvents = [];
+      const usmaEvents = [];
       const opponentEvents = [];
 
       events.forEach((event, idx) => {
         const e = { ...event, originalIndex: idx };
         const type = event.type || "";
-        const isVig = event.team === 'vigontina' || [
+        const isUsma = event.team === 'usma' || [
           'goal','penalty-goal','penalty-missed','save','missed-shot','shot-blocked',
           'free-kick-missed','free-kick-saved','free-kick-hit','opponent-own-goal','substitution'
-        ].includes(type) || ((type.includes('palo-') || type.includes('traversa-')) && event.team==='vigontina');
+        ].includes(type) || ((type.includes('palo-') || type.includes('traversa-')) && event.team==='usma');
 
-        if (isVig) {
-          vigontinaEvents.push(e);
-        } else {
-          opponentEvents.push(e);
-        }
+        if (isUsma) usmaEvents.push(e); else opponentEvents.push(e);
       });
 
       const sortByMinute = (a,b) => (a.minute||0)-(b.minute||0);
-      return { period, periodIdx, vigontina: vigontinaEvents.sort(sortByMinute), opponent: opponentEvents.sort(sortByMinute) };
-    }).filter(p => p.vigontina.length>0 || p.opponent.length>0 || p.period.vigontina>0 || p.period.opponent>0);
+      return { period, periodIdx, usma: usmaEvents.sort(sortByMinute), opponent: opponentEvents.sort(sortByMinute) };
+    }).filter(p => p.usma.length>0 || p.opponent.length>0 || p.period.usma>0 || p.period.opponent>0);
   }, [match.periods]);
 
   const getPlayerLabel = (num) => {
@@ -57,11 +53,11 @@ const MatchSummary = ({ match, onBack, onExportExcel, onExportPDF, onFIGCReport 
             <div className="text-center mb-4">
               <p className={`text-3xl font-black mb-2 ${result.resultColor}`}>{result.resultText}</p>
               <div className="flex items-center justify-center gap-8 mb-3">
-                <div className="text-center"><p className="text-sm text_gray-600 mb-1">Vigontina San Paolo</p><p className="text-5xl font-bold text-gray-900">{stats.vigontinaPoints}</p></div>
+                <div className="text-center"><p className="text-sm text_gray-600 mb-1">USMA Padova</p><p className="text-5xl font-bold text-gray-900">{stats.usmaPoints}</p></div>
                 <span className="text-3xl text-gray-400">-</span>
                 <div className="text-center"><p className="text-sm text-gray-600 mb-1">{match.opponent}</p><p className="text-5xl font-bold text-gray-900">{stats.opponentPoints}</p></div>
               </div>
-              <p className="text-sm text-gray-600">Gol totali: {stats.vigontinaGoals} - {stats.opponentGoals}</p>
+              <p className="text-sm text-gray-600">Gol totali: {stats.usmaGoals} - {stats.opponentGoals}</p>
             </div>
 
             <div className="bg-white/50 p-3 rounded text-sm">
@@ -82,8 +78,8 @@ const MatchSummary = ({ match, onBack, onExportExcel, onExportPDF, onFIGCReport 
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="font-semibold text-lg">📋 Cronologia Partita per Squadra</h3>
                   {match.periods?.some(p => Array.isArray(p.lineup) && p.lineup.length > 0) && (
-                    <button onClick={()=>setShowLineups(s=>!s)} className="text-xs px-2 py-1 rounded border border-gray-200 text-gray-600 hover:bg-gray-50 flex items-center gap-1" title="Mostra/Nascondi 9 in campo per tempo">
-                      <Users className="w-3 h-3" /> {showLineups ? 'Nascondi 9 in campo' : '9 in campo'}
+                    <button onClick={()=>setShowLineups(s=>!s)} className="text-xs px-2 py-1 rounded border border-gray-200 text-gray-600 hover:bg-gray-50 flex items-center gap-1" title="Mostra/Nascondi 7 in campo per tempo">
+                      <Users className="w-3 h-3" /> {showLineups ? 'Nascondi 7 in campo' : '7 in campo'}
                     </button>
                   )}
                 </div>
@@ -93,11 +89,11 @@ const MatchSummary = ({ match, onBack, onExportExcel, onExportPDF, onFIGCReport 
                       <div className="bg-gradient-to-r from-slate-100 to-slate-50 p-3 border-b">
                         <div className="flex items-center justify-between">
                           <h4 className="font-bold text-gray-800">{p.period.name}</h4>
-                          <span className="text-sm font-semibold text-gray-600">Vigontina {p.period.vigontina} - {p.period.opponent} {match.opponent}</span>
+                          <span className="text-sm font-semibold text-gray-600">USMA {p.period.usma||0} - {p.period.opponent||0} {match.opponent}</span>
                         </div>
                         {showLineups && Array.isArray(p.period.lineup) && p.period.lineup.length > 0 && (
                           <div className="mt-2 text-[11px] text-gray-600">
-                            <span className="font-semibold mr-1">9 in campo:</span>
+                            <span className="font-semibold mr-1">7 in campo:</span>
                             <span className="inline-block align-middle">
                               {p.period.lineup.map((num, idx)=> (
                                 <span key={idx} className="mr-2 whitespace-nowrap">{getPlayerLabel(num)}</span>
@@ -108,8 +104,8 @@ const MatchSummary = ({ match, onBack, onExportExcel, onExportPDF, onFIGCReport 
                       </div>
                       <div className="grid grid-cols-2 gap-4 p-4">
                         <div className="space-y-2">
-                          {p.vigontina.length>0 ? p.vigontina.map((event)=> (
-                            <SummaryEventCard key={event.originalIndex} event={event} team="vigontina" opponentName={match.opponent} />
+                          {p.usma.length>0 ? p.usma.map((event)=> (
+                            <SummaryEventCard key={event.originalIndex} event={event} team="usma" opponentName={match.opponent} />
                           )) : (<div className="text-xs text-gray-400 text-center py-2 bg-gray-50 rounded">Nessun evento</div>)}
                         </div>
                         <div className="space-y-2">
@@ -192,50 +188,37 @@ const SummaryEventCard = ({ event, team, opponentName }) => {
     );
   }
   if (event.type === "own-goal") {
-    return (
-      blueCard(
-        <p className={`font-medium ${textClasses}`}>{redBall} {minute}' - Autogol Vigontina</p>
-      )
-    );
+    return blueCard(<p className={`font-medium ${textClasses}`}>{redBall} {minute}' - Autogol USMA Padova</p>);
   }
   if (event.type === "opponent-own-goal") {
-    return (
-      greenCard(
-        <p className={`font-medium ${textClasses}`}>{redBall} {minute}' - Autogol {opponentName}</p>
-      )
-    );
+    return greenCard(<p className={`font-medium ${textClasses}`}>{redBall} {minute}' - Autogol {opponentName}</p>);
   }
   if (event.type.includes('penalty') && event.type.includes('missed')) {
-    const who = event.type === 'penalty-missed' ? 'Vigontina' : opponentName;
-    return grayCard(
-      <p className="font-medium">
-        ❌ {minute}' - Rigore fallito {who}
-        <Badge color="purple">RIG.</Badge>
-      </p>
-    );
+    const who = event.type === 'penalty-missed' ? 'USMA Padova' : opponentName;
+    return grayCard(<p className="font-medium">❌ {minute}' - Rigore fallito {who} <Badge color="purple">RIG.</Badge></p>);
   }
   if (event.type === "save" || event.type === "opponent-save") {
-    const isVig = event.type === 'save';
-    return grayCard(<p className="font-medium">🧤 {minute}' - Parata {isVig ? `${event.player} ${event.playerName}` : `portiere ${opponentName}`}</p>);
+    const isUsma = event.type === 'save';
+    return grayCard(<p className="font-medium">🧤 {minute}' - Parata {isUsma ? `${event.player} ${event.playerName}` : `portiere ${opponentName}`}</p>);
   }
   if (event.type === "missed-shot" || event.type === "opponent-missed-shot") {
-    const isVig = event.type === 'missed-shot';
-    return grayCard(<p className="font-medium">🎯 {minute}' - Tiro fuori {isVig ? `${event.player} ${event.playerName}` : opponentName}</p>);
+    const isUsma = event.type === 'missed-shot';
+    return grayCard(<p className="font-medium">🎯 {minute}' - Tiro fuori {isUsma ? `${event.player} ${event.playerName}` : opponentName}</p>);
   }
   if (event.type === "shot-blocked" || event.type === "opponent-shot-blocked") {
-    const isVig = event.type === 'shot-blocked';
-    return grayCard(<p className="font-medium">🧤 {minute}' - Tiro parato {isVig ? `${event.player} ${event.playerName}` : opponentName}</p>);
+    const isUsma = event.type === 'shot-blocked';
+    return grayCard(<p className="font-medium">🧤 {minute}' - Tiro parato {isUsma ? `${event.player} ${event.playerName}` : opponentName}</p>);
   }
   if (event.type?.includes('palo-') || event.type?.includes('traversa-')) {
-    const isVig = event.team === 'vigontina';
+    const isUsma = event.team === 'usma';
     const hitTypeDisplay = event.hitType === 'palo' ? '🧱 Palo' : '⎯ Traversa';
-    return grayCard(<p className="font-medium">{hitTypeDisplay} {minute}' - {isVig ? `${event.player} ${event.playerName}` : opponentName}</p>);
+    return grayCard(<p className="font-medium">{hitTypeDisplay} {minute}' - {isUsma ? `${event.player} ${event.playerName}` : opponentName}</p>);
   }
   if (event.type?.startsWith('free-kick')) {
     const label = event.type.includes('missed') ? 'Punizione fuori' : event.type.includes('saved') ? 'Punizione parata' : 'Punizione';
     const suffix = event.hitType === 'palo' ? ' (Palo)' : event.hitType === 'traversa' ? ' (Traversa)' : '';
-    const isVig = event.team !== 'opponent';
-    return grayCard(<p className="font-medium">🎯 {minute}' - {label}{suffix} {isVig ? `${event.player||''} ${event.playerName||''}`.trim() : opponentName}</p>);
+    const isUsma = event.team !== 'opponent';
+    return grayCard(<p className="font-medium">🎯 {minute}' - {label}{suffix} {isUsma ? `${event.player||''} ${event.playerName||''}`.trim() : opponentName}</p>);
   }
   if (event.type === 'substitution') {
     return grayCard(
