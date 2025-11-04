@@ -1,7 +1,8 @@
-// components/MatchOverview.jsx (controls always visible; removed viewer gating)
-import React from "react";
-import { ArrowLeft, Download, FileText, ClipboardCheck, Users } from "lucide-react";
+// components/MatchOverview.jsx (adds 'Imposta 7' actions per period)
+import React, { useState } from "react";
+import { ArrowLeft, Download, FileText, ClipboardCheck, Users, Settings2 } from "lucide-react";
 import { calculatePoints, calculateTotalGoals } from "../utils/matchUtils";
+import LineupModal from "./modals/LineupModal";
 
 const REQUIRED_ON_FIELD = 7;
 
@@ -16,7 +17,10 @@ const MatchOverview = ({
   onFIGCReport,
   isTimerRunning,
   onBack,
+  onSetLineup, // pass-through to set lineup from overview
 }) => {
+  const [openLineupFor, setOpenLineupFor] = useState(null);
+
   const lineupCount = (p) => Array.isArray(p.lineup) ? p.lineup.length : 0;
   const lineupBadge = (p) => {
     const count = lineupCount(p);
@@ -28,6 +32,15 @@ const MatchOverview = ({
       </span>
     );
   };
+
+  const handleConfirmLineup = (periodIndex, lineup) => {
+    onSetLineup?.(periodIndex, lineup);
+    setOpenLineupFor(null);
+  };
+
+  const availablePlayers = match?.notCalled && Array.isArray(match.notCalled)
+    ? (window.PLAYERS || []).filter((p)=>!match.notCalled.includes(p.num))
+    : (window.PLAYERS || []);
 
   return (
     <div className="min-h-screen bg-neutral-50 p-4">
@@ -116,24 +129,36 @@ const MatchOverview = ({
                         </p>
                       </div>
                     </div>
-                    {!completed ? (
-                      <button
-                        onClick={() => onStartPeriod(idx)}
-                        disabled={!canPlay}
-                        className={`px-3 py-1 rounded text-sm ${canPlay ? 'bg-primary text-white hover:bg-primary-dark' : 'bg-neutral-200 text-neutral-500 cursor-not-allowed'}`}
-                        title={canPlay? (isPT? 'Inizia' : 'Gioca') : `Seleziona ${REQUIRED_ON_FIELD} giocatori`}
-                      >
-                        {isPT ? "Inizia" : "Gioca"}
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => onViewPeriod(idx)}
-                        className="border border-primary text-primary px-3 py-1 rounded hover:bg-primary-light flex items-center gap-1 text-sm"
-                      >
-                        <FileText className="w-3 h-3" />
-                        Dettagli
-                      </button>
-                    )}
+                    <div className="flex items-center gap-2">
+                      {!completed && (
+                        <button
+                          onClick={() => onStartPeriod(idx)}
+                          disabled={!canPlay}
+                          className={`px-3 py-1 rounded text-sm ${canPlay ? 'bg-primary text-white hover:bg-primary-dark' : 'bg-neutral-200 text-neutral-500 cursor-not-allowed'}`}
+                          title={canPlay? (isPT? 'Inizia' : 'Gioca') : `Seleziona ${REQUIRED_ON_FIELD} giocatori`}
+                        >
+                          {isPT ? "Inizia" : "Gioca"}
+                        </button>
+                      )}
+                      {!completed && !isPT && (
+                        <button
+                          onClick={() => setOpenLineupFor(idx)}
+                          className="px-3 py-1 rounded text-sm border border-neutral-300 hover:bg-neutral-50 flex items-center gap-1"
+                          title="Imposta 7 ora"
+                        >
+                          <Settings2 className="w-3 h-3" /> Imposta 7
+                        </button>
+                      )}
+                      {completed && (
+                        <button
+                          onClick={() => onViewPeriod(idx)}
+                          className="border border-primary text-primary px-3 py-1 rounded hover:bg-primary-light flex items-center gap-1 text-sm"
+                        >
+                          <FileText className="w-3 h-3" />
+                          Dettagli
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               );
@@ -183,6 +208,15 @@ const MatchOverview = ({
           </div>
         </div>
       </div>
+
+      {openLineupFor !== null && (
+        <LineupModal
+          availablePlayers={availablePlayers}
+          initialLineup={match.periods[openLineupFor]?.lineup || []}
+          onConfirm={(lineup)=>handleConfirmLineup(openLineupFor, lineup)}
+          onCancel={()=>setOpenLineupFor(null)}
+        />
+      )}
     </div>
   );
 };
