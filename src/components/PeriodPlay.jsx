@@ -1,4 +1,4 @@
-// components/PeriodPlay.jsx (DEFINITIVO: tutti i controlli completi)
+// components/PeriodPlay.jsx (DEFINITIVO: controlli senza ruoli organizer/viewer)
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { ArrowLeft, Play, Pause, Plus, Minus, Flag, Repeat } from "lucide-react";
 import { PLAYERS } from "../constants/players";
@@ -11,7 +11,7 @@ import SubstitutionModal from "./modals/SubstitutionModal";
 import FreeKickModal from "./modals/FreeKickModal";
 import ProvaTecnicaPanel from "./ProvaTecnicaPanel";
 
-const REQUIRED_ON_FIELD = 7; // Pulcini 7>7
+const REQUIRED_ON_FIELD = 7; // Pulcini 7v7
 
 const PeriodPlay = ({
   match,
@@ -31,8 +31,6 @@ const PeriodPlay = ({
   isEditing,
   onBack,
   onSetLineup,
-  isShared = false,
-  userRole = 'organizer',
   onAddSubstitution,
   onAddFreeKick,
 }) => {
@@ -50,7 +48,6 @@ const PeriodPlay = ({
   }
 
   const isProvaTecnica = period.name === "PROVA TECNICA";
-  const isViewer = isShared && userRole !== 'organizer';
   const safeGetMinute = typeof timer?.getCurrentMinute === 'function' ? timer.getCurrentMinute : () => 0;
 
   const [showGoalDialog, setShowGoalDialog] = useState(false);
@@ -77,11 +74,11 @@ const PeriodPlay = ({
 
   // Chiedi formazione una sola volta, solo nei tempi normali
   useEffect(() => {
-    if (!isProvaTecnica && !isViewer && (!period.lineup || period.lineup.length !== REQUIRED_ON_FIELD) && !lineupAlreadyAsked && !period.lineupPrompted) {
+    if (!isProvaTecnica && (!period.lineup || period.lineup.length !== REQUIRED_ON_FIELD) && !lineupAlreadyAsked && !period.lineupPrompted) {
       setShowLineupDialog(true);
       setLineupAlreadyAsked(true);
     }
-  }, [period.name, isProvaTecnica, isViewer, lineupAlreadyAsked, period.lineupPrompted, period.lineup]);
+  }, [period.name, isProvaTecnica, lineupAlreadyAsked, period.lineupPrompted, period.lineup]);
 
   const handleLineupConfirm = useCallback((lineup) => {
     if (!Array.isArray(lineup) || lineup.length !== REQUIRED_ON_FIELD) {
@@ -166,7 +163,7 @@ const PeriodPlay = ({
           </h2>
 
           {/* BARRA CONTROLLI SUPERIORE - solo tempi normali */}
-          {!isProvaTecnica && !isViewer && (
+          {!isProvaTecnica && (
             <div className="flex justify-end -mt-2 mb-4 gap-2">
               <button onClick={() => setShowLineupDialog(true)} className="text-xs px-2 py-1 rounded bg-gray-100 hover:bg-gray-200 border border-gray-200" title={`Modifica i ${REQUIRED_ON_FIELD} in campo`}>👥 {REQUIRED_ON_FIELD} in campo</button>
               <button onClick={() => setManualScoreMode((m) => !m)} className={`text-xs px-2 py-1 rounded border ${manualScoreMode? "bg-yellow-100 border-yellow-300 text-yellow-800" : "bg-gray-50 border-gray-200 text-gray-700"}`} title="Attiva/Disattiva modifica manuale punteggio">{manualScoreMode? "✅ Modifica punteggio attiva" : "✏️ Modifica punteggio"}</button>
@@ -193,7 +190,7 @@ const PeriodPlay = ({
                   <h3 className="text-sm font-medium text-gray-600 mb-2">Punteggio Attuale</h3>
                   <div className="flex items-center justify-center gap-4">
                     <div className="text-center flex items-center gap-2">
-                      {manualScoreMode && !isViewer && (
+                      {manualScoreMode && (
                         <button onClick={() => onUpdateScore?.('usma', -1)} className="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600" disabled={(period.usma || 0) <= 0}>
                           <Minus className="w-3 h-3" />
                         </button>
@@ -202,7 +199,7 @@ const PeriodPlay = ({
                         <p className="text-xs text-gray-500">USMA Padova</p>
                         <p className="text-3xl font-bold text-green-600">{period.usma || 0}</p>
                       </div>
-                      {manualScoreMode && !isViewer && (
+                      {manualScoreMode && (
                         <button onClick={() => onUpdateScore?.('usma', 1)} className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-green-600">
                           <Plus className="w-3 h-3" />
                         </button>
@@ -210,7 +207,7 @@ const PeriodPlay = ({
                     </div>
                     <span className="text-2xl font-bold text-gray-400">-</span>
                     <div className="text-center flex items-center gap-2">
-                      {manualScoreMode && !isViewer && (
+                      {manualScoreMode && (
                         <button onClick={() => onUpdateScore?.('opponent', -1)} className="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600" disabled={(period.opponent || 0) <= 0}>
                           <Minus className="w-3 h-3" />
                         </button>
@@ -219,7 +216,7 @@ const PeriodPlay = ({
                         <p className="text-xs text-gray-500">{match.opponent}</p>
                         <p className="text-3xl font-bold text-blue-600">{period.opponent || 0}</p>
                       </div>
-                      {manualScoreMode && !isViewer && (
+                      {manualScoreMode && (
                         <button onClick={() => onUpdateScore?.('opponent', 1)} className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-blue-600">
                           <Plus className="w-3 h-3" />
                         </button>
@@ -234,92 +231,60 @@ const PeriodPlay = ({
                 <div className="text-center mb-4">
                   <div className="text-5xl font-mono font-bold text-gray-800">{typeof timer?.formatTime === 'function' ? timer.formatTime(timer.timerSeconds) : "00:00"}</div>
                 </div>
-                {!isViewer && (
-                  <div className="flex gap-2">
-                    <button onClick={timer?.isTimerRunning ? timer.pauseTimer : timer?.startTimer} className="flex-1 bg-blue-500 text-white py-2 rounded hover:bg-blue-600 flex items-center justify-center gap-2 text-sm">
-                      {timer?.isTimerRunning ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                      {timer?.isTimerRunning ? "Pausa" : "Avvia"}
-                    </button>
-                  </div>
-                )}
+                <div className="flex gap-2">
+                  <button onClick={timer?.isTimerRunning ? timer.pauseTimer : timer?.startTimer} className="flex-1 bg-blue-500 text-white py-2 rounded hover:bg-blue-600 flex items-center justify-center gap-2 text-sm">
+                    {timer?.isTimerRunning ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                    {timer?.isTimerRunning ? "Pausa" : "Avvia"}
+                  </button>
+                </div>
               </div>
 
               {/* AZIONI PARTITA */}
-              {!isViewer && (
-                <div className="space-y-3 mb-6">
-                  <div className="grid grid-cols-2 gap-3">
-                    <button onClick={() => setShowGoalDialog(true)} className="bg-green-500 text-white py-2 px-3 rounded hover:bg-green-600 font-medium text-sm">⚽ Gol USMA</button>
-                    <button onClick={() => onAddOpponentGoal(safeGetMinute)} className="bg-blue-500 text-white py-2 px-3 rounded hover:bg-blue-600 font-medium text-sm">⚽ Gol {match.opponent}</button>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button onClick={() => setShowOwnGoalDialog(true)} className="bg-red-500 text-white py-2 px-3 rounded hover:bg-red-600 font-medium text-sm">⚽ Autogol</button>
-                    <button onClick={() => setShowPenaltyDialog(true)} className="bg-purple-500 text-white py-2 px-3 rounded hover:bg-purple-600 font-medium text-sm">🎯 Rigore</button>
-                  </div>
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                    <p className="text-sm font-semibold text-yellow-800 text-center mb-3">Azioni Salienti</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      <button onClick={startShotFlow} className="bg-gray-600 text-white py-2 px-2 rounded hover:bg-gray-700 font-medium text-xs">🎯 Tiro</button>
-                      <button onClick={()=>setShowSubstitution(true)} className="bg-indigo-600 text-white py-2 px-2 rounded hover:bg-indigo-700 font-medium text-xs flex items-center justify-center gap-1"><Repeat className="w-3 h-3" /> Sostituzione</button>
-                      <button onClick={()=>setShowFreeKickDialog(true)} className="bg-orange-600 text-white py-2 px-2 rounded hover:bg-orange-700 font-medium text-xs">🟧 Punizione</button>
-                      <button onClick={() => setShowDeleteEventDialog(true)} className="bg-red-600 text-white py-2 px-2 rounded hover:bg-red-700 font-medium text-xs" disabled={events.length === 0}>🗑️ Elimina Evento</button>
-                    </div>
+              <div className="space-y-3 mb-6">
+                <div className="grid grid-cols-2 gap-3">
+                  <button onClick={() => setShowGoalDialog(true)} className="bg-green-500 text-white py-2 px-3 rounded hover:bg-green-600 font-medium text-sm">⚽ Gol USMA</button>
+                  <button onClick={() => onAddOpponentGoal(safeGetMinute)} className="bg-blue-500 text-white py-2 px-3 rounded hover:bg-blue-600 font-medium text-sm">⚽ Gol {match.opponent}</button>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <button onClick={() => setShowOwnGoalDialog(true)} className="bg-red-500 text-white py-2 px-3 rounded hover:bg-red-600 font-medium text-sm">⚽ Autogol</button>
+                  <button onClick={() => setShowPenaltyDialog(true)} className="bg-purple-500 text-white py-2 px-3 rounded hover:bg-purple-600 font-medium text-sm">🎯 Rigore</button>
+                </div>
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                  <p className="text-sm font-semibold text-yellow-800 text-center mb-3">Azioni Salienti</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button onClick={startShotFlow} className="bg-gray-600 text-white py-2 px-2 rounded hover:bg-gray-700 font-medium text-xs">🎯 Tiro</button>
+                    <button onClick={()=>setShowSubstitution(true)} className="bg-indigo-600 text-white py-2 px-2 rounded hover:bg-indigo-700 font-medium text-xs flex items-center justify-center gap-1"><Repeat className="w-3 h-3" /> Sostituzione</button>
+                    <button onClick={()=>setShowFreeKickDialog(true)} className="bg-orange-600 text-white py-2 px-2 rounded hover:bg-orange-700 font-medium text-xs">🟧 Punizione</button>
+                    <button onClick={() => setShowDeleteEventDialog(true)} className="bg-red-600 text-white py-2 px-2 rounded hover:bg-red-700 font-medium text-xs" disabled={events.length === 0}>🗑️ Elimina Evento</button>
                   </div>
                 </div>
-              )}
-
-              {/* EVENTI ORGANIZZATI */}
-              {(organizedEvents.usma.length > 0 || organizedEvents.opponent.length > 0) && (
-                <div className="mb-6 grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    {organizedEvents.usma.map((event) => (
-                      <TeamEventCard key={event.originalIndex} event={event} team="usma" opponentName={match.opponent} />
-                    ))}
-                  </div>
-                  <div className="space-y-2">
-                    {organizedEvents.opponent.map((event) => (
-                      <TeamEventCard key={event.originalIndex} event={event} team="opponent" opponentName={match.opponent} />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* TERMINA TEMPO - spostato in fondo */}
-              {!isViewer && (
-                <div className="mt-8">
-                  <button onClick={onFinish} disabled={!canFinish} className={`w-full py-4 rounded-lg font-semibold text-white text-base shadow-sm transition flex items-center justify-center gap-2 ${canFinish? 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300' : 'bg-gray-300 cursor-not-allowed'}`} title={isEditing ? "Salva Modifiche" : `Termina ${periodTitle}`}>
-                    <Flag className="w-5 h-5" /> {isEditing ? "Salva Modifiche" : `Termina ${periodTitle}`}
-                  </button>
-                  {!canFinish && (
-                    <p className="mt-2 text-xs text-red-600 text-center">Seleziona esattamente {REQUIRED_ON_FIELD} giocatori per terminare il tempo.</p>
-                  )}
-                </div>
-              )}
+              </div>
             </>
           )}
 
           {/* MODALS - tutte le interazioni */}
-          {!isViewer && showGoalDialog && (
+          {showGoalDialog && (
             <GoalModal availablePlayers={availablePlayers} onConfirm={(sc,as)=>{ onAddGoal(sc,as); setShowGoalDialog(false);} } onCancel={()=>setShowGoalDialog(false)} />
           )}
-          {!isViewer && showOwnGoalDialog && (
+          {showOwnGoalDialog && (
             <OwnGoalModal opponentName={match.opponent} onConfirm={(team)=>{ onAddOwnGoal(team); setShowOwnGoalDialog(false);} } onCancel={()=>setShowOwnGoalDialog(false)} />
           )}
-          {!isViewer && showPenaltyDialog && (
+          {showPenaltyDialog && (
             <PenaltyAdvancedModal availablePlayers={availablePlayers} opponentName={match.opponent} onConfirm={(...args)=>{ onAddPenalty(...args); setShowPenaltyDialog(false);} } onCancel={()=>setShowPenaltyDialog(false)} />
           )}
-          {!isViewer && showLineupDialog && (
+          {showLineupDialog && (
             <LineupModal availablePlayers={availablePlayers} initialLineup={period.lineup || []} onConfirm={handleLineupConfirm} onCancel={handleLineupCancel} />
           )}
-          {!isViewer && showDeleteEventDialog && (
+          {showDeleteEventDialog && (
             <DeleteEventModal events={events} opponentName={match.opponent} onConfirm={(idx,reason)=>{ onDeleteEvent?.(periodIndex, idx, reason); setShowDeleteEventDialog(false);} } onCancel={()=>setShowDeleteEventDialog(false)} />
           )}
-          {!isViewer && showSubstitution && (
+          {showSubstitution && (
             <SubstitutionModal periodLineup={period.lineup||[]} notCalled={match.notCalled||[]} onConfirm={(outNum,inNum)=>{ onAddSubstitution?.(periodIndex, outNum, inNum, safeGetMinute()); setShowSubstitution(false);} } onCancel={()=>setShowSubstitution(false)} />
           )}
-          {!isViewer && showFreeKickDialog && (
+          {showFreeKickDialog && (
             <FreeKickModal availablePlayers={availablePlayers} opponentName={match.opponent} onConfirm={handleFreeKickConfirm} onCancel={()=>setShowFreeKickDialog(false)} />
           )}
-          {!isViewer && showShotSelectionDialog && (
+          {showShotSelectionDialog && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
               <div className="bg-white rounded-lg p-6 w-full max-w-md">
                 <h3 className="text-lg font-semibold mb-4 text-center">Esito del Tiro</h3>
@@ -333,7 +298,7 @@ const PeriodPlay = ({
               </div>
             </div>
           )}
-          {!isViewer && showShotTeamDialog && (
+          {showShotTeamDialog && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
               <div className="bg-white rounded-lg p-6 w-full max-w-md">
                 <h3 className="text-lg font-semibold mb-4 text-center">Chi ha effettuato il tiro?</h3>
@@ -345,7 +310,7 @@ const PeriodPlay = ({
               </div>
             </div>
           )}
-          {!isViewer && showShotPlayerDialog && (
+          {showShotPlayerDialog && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
               <div className="bg-white rounded-lg p-6 w-full max-w-md">
                 <h3 className="text-lg font-semibold mb-4 text-center">Seleziona giocatore</h3>
