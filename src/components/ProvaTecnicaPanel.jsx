@@ -54,10 +54,10 @@ const Info = () => (
 
 const ProvaTecnicaPanel = ({
   opponentName,
-  vigScore,
+  usmaScore,
   oppScore,
-  onVigMinus,
-  onVigPlus,
+  onUsmaMinus,
+  onUsmaPlus,
   onOppMinus,
   onOppPlus,
   onFinish,
@@ -65,17 +65,17 @@ const ProvaTecnicaPanel = ({
   return (
     <div>
       <ScoreBox
-        leftLabel="Vigontina"
+        leftLabel="USMA Padova"
         rightLabel={opponentName || "Avversario"}
-        leftScore={vigScore}
+        leftScore={usmaScore}
         rightScore={oppScore}
       />
       <Info />
       <Row
-        label="Punti Vigontina"
-        minusDisabled={(vigScore || 0) <= 0}
-        onMinus={onVigMinus}
-        onPlus={onVigPlus}
+        label="Punti USMA"
+        minusDisabled={(usmaScore || 0) <= 0}
+        onMinus={onUsmaMinus}
+        onPlus={onUsmaPlus}
       />
       <Row
         label={`Punti ${opponentName || "Avversario"}`}
