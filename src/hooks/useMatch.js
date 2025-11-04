@@ -106,7 +106,7 @@ export const useMatch = () => {
       updated.periods = [...prev.periods];
       const period = { ...updated.periods[currentPeriod] };
       period.goals = [...period.goals, goal];
-      period.vigontina = (period.vigontina || 0) + 1;
+      period.usma = (period.usma || 0) + 1;
       updated.periods[currentPeriod] = period;
       return updated;
     });
@@ -151,7 +151,7 @@ export const useMatch = () => {
     const minute = typeof getCurrentMinute === 'function' ? getCurrentMinute() : 0;
     const goal = {
       minute,
-      type: team === 'vigontina' ? 'own-goal' : 'opponent-own-goal',
+      type: team === 'usma' ? 'own-goal' : 'opponent-own-goal',
       timestamp: Date.now()
     };
 
@@ -161,11 +161,11 @@ export const useMatch = () => {
       const period = { ...updated.periods[currentPeriod] };
       period.goals = [...period.goals, goal];
       
-      // Autogol vigontina = punto avversario, autogol avversario = punto vigontina
-      if (team === 'vigontina') {
+      // Autogol USMA = punto avversario, autogol avversario = punto USMA
+      if (team === 'usma') {
         period.opponent = (period.opponent || 0) + 1;
       } else {
-        period.vigontina = (period.vigontina || 0) + 1;
+        period.usma = (period.usma || 0) + 1;
       }
       
       updated.periods[currentPeriod] = period;
@@ -188,8 +188,8 @@ export const useMatch = () => {
     const penalty = {
       minute,
       type: scored 
-        ? (team === 'vigontina' ? 'penalty-goal' : 'penalty-opponent-goal')
-        : (team === 'vigontina' ? 'penalty-missed' : 'penalty-opponent-missed'),
+        ? (team === 'usma' ? 'penalty-goal' : 'penalty-opponent-goal')
+        : (team === 'usma' ? 'penalty-missed' : 'penalty-opponent-missed'),
       scorer: scorerNum,
       scorerName,
       team,
@@ -203,8 +203,8 @@ export const useMatch = () => {
       period.goals = [...period.goals, penalty];
       
       if (scored) {
-        if (team === 'vigontina') {
-          period.vigontina = (period.vigontina || 0) + 1;
+        if (team === 'usma') {
+          period.usma = (period.usma || 0) + 1;
         } else {
           period.opponent = (period.opponent || 0) + 1;
         }
@@ -224,8 +224,8 @@ export const useMatch = () => {
       updated.periods = [...prev.periods];
       const period = { ...updated.periods[currentPeriod] };
       
-      if (team === "vigontina") {
-        period.vigontina = Math.max(0, (period.vigontina || 0) + delta);
+      if (team === "usma") {
+        period.usma = Math.max(0, (period.usma || 0) + delta);
       } else {
         period.opponent = Math.max(0, (period.opponent || 0) + delta);
       }
@@ -244,7 +244,7 @@ export const useMatch = () => {
     
     const save = {
       minute,
-      type: team === 'vigontina' ? 'save' : 'opponent-save',
+      type: team === 'usma' ? 'save' : 'opponent-save',
       player: playerNum,
       playerName,
       team,
@@ -269,7 +269,7 @@ export const useMatch = () => {
     
     const missedShot = {
       minute,
-      type: team === 'vigontina' ? 'missed-shot' : 'opponent-missed-shot',
+      type: team === 'usma' ? 'missed-shot' : 'opponent-missed-shot',
       player: playerNum,
       playerName,
       team,
@@ -294,7 +294,7 @@ export const useMatch = () => {
     
     const shotBlocked = {
       minute,
-      type: team === 'vigontina' ? 'shot-blocked' : 'opponent-shot-blocked',
+      type: team === 'usma' ? 'shot-blocked' : 'opponent-shot-blocked',
       player: playerNum,
       playerName,
       team,
@@ -429,7 +429,7 @@ export const useMatch = () => {
         // Se era un gol, rimuovi il punto
         const event = events[eventIndex];
         if (['goal', 'penalty-goal', 'opponent-own-goal'].includes(event.type)) {
-          period.vigontina = Math.max(0, (period.vigontina || 0) - 1);
+          period.usma = Math.max(0, (period.usma || 0) - 1);
         } else if (['opponent-goal', 'penalty-opponent-goal', 'own-goal'].includes(event.type)) {
           period.opponent = Math.max(0, (period.opponent || 0) - 1);
         }
