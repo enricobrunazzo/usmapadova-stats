@@ -8,7 +8,7 @@ import { PLAYERS } from '../constants/players';
 export const exportMatchHistoryToExcel = async (matches) => {
   try {
     const workbook = new ExcelJS.Workbook();
-    workbook.creator = 'Vigontina Calcio';
+    workbook.creator = 'USMA Padova';
     workbook.created = new Date();
 
     const colors = {
@@ -26,7 +26,7 @@ export const exportMatchHistoryToExcel = async (matches) => {
     });
 
     try {
-      const response = await fetch('/forza-vigontina.png');
+      const response = await fetch('/logo-usma.png');
       const blob = await response.blob();
       const arrayBuffer = await blob.arrayBuffer();
       const imageId = workbook.addImage({ buffer: arrayBuffer, extension: 'png' });
@@ -37,7 +37,7 @@ export const exportMatchHistoryToExcel = async (matches) => {
 
     sheet1.mergeCells('A6:F6');
     const titleCell = sheet1.getCell('A6');
-    titleCell.value = 'VIGONTINA CALCIO - STAGIONE 2025/2026';
+    titleCell.value = 'USMA PADOVA - STAGIONE 2025/2026';
     titleCell.font = { size: 20, bold: true, color: { argb: colors.white } };
     titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: colors.primaryGreen } };
     titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
@@ -55,9 +55,9 @@ export const exportMatchHistoryToExcel = async (matches) => {
 
     const stats = { totPartite: matches.length, vittorie: 0, pareggi: 0, sconfitte: 0, golFatti: 0, golSubiti: 0 };
     matches.forEach(match => {
-      const vigontinaPts = match.finalPoints?.vigontina || 0; const opponentPts = match.finalPoints?.opponent || 0;
-      if (vigontinaPts > opponentPts) stats.vittorie++; else if (vigontinaPts === opponentPts) stats.pareggi++; else stats.sconfitte++;
-      match.periods?.forEach(period => { stats.golFatti += period.vigontina || 0; stats.golSubiti += period.opponent || 0; });
+      const usmaPts = match.finalPoints?.usma || 0; const opponentPts = match.finalPoints?.opponent || 0;
+      if (usmaPts > opponentPts) stats.vittorie++; else if (usmaPts === opponentPts) stats.pareggi++; else stats.sconfitte++;
+      match.periods?.forEach(period => { stats.golFatti += period.usma || 0; stats.golSubiti += period.opponent || 0; });
     });
 
     const statsData = [
@@ -96,10 +96,10 @@ export const exportMatchHistoryToExcel = async (matches) => {
 
     const sortedMatches = [...matches].sort((a,b)=> new Date(b.date) - new Date(a.date));
     sortedMatches.forEach(match => {
-      const vigontinaPts = match.finalPoints?.vigontina || 0; const opponentPts = match.finalPoints?.opponent || 0;
-      const isWin = vigontinaPts > opponentPts; const isLoss = vigontinaPts < opponentPts;
-      let vigontinaGoals = 0; let opponentGoals = 0; match.periods?.forEach(p=>{ vigontinaGoals += p.vigontina || 0; opponentGoals += p.opponent || 0; });
-      const rowData = [ new Date(match.date).toLocaleDateString('it-IT'), match.opponent, `${vigontinaGoals} - ${opponentGoals}`, `${vigontinaPts} - ${opponentPts}`, match.competition || '-', match.isHome ? '🏠 Casa' : '✈️ Trasferta' ];
+      const usmaPts = match.finalPoints?.usma || 0; const opponentPts = match.finalPoints?.opponent || 0;
+      const isWin = usmaPts > opponentPts; const isLoss = usmaPts < opponentPts;
+      let usmaGoals = 0; let opponentGoals = 0; match.periods?.forEach(p=>{ usmaGoals += p.usma || 0; opponentGoals += p.opponent || 0; });
+      const rowData = [ new Date(match.date).toLocaleDateString('it-IT'), match.opponent, `${usmaGoals} - ${opponentGoals}`, `${usmaPts} - ${opponentPts}`, match.competition || '-', match.isHome ? '🏠 Casa' : '✈️ Trasferta' ];
       const dataRow = sheet1.addRow(rowData); dataRow.height = 18; dataRow.alignment = { vertical:'middle', horizontal:'center' };
       const rowColor = isWin ? 'FFD1FAE5' : isLoss ? 'FFFECACA' : 'FFFEF3C7';
       rowData.forEach((_, idx)=>{ const c = sheet1.getCell(`${String.fromCharCode(65+idx)}${currentRow}`); c.fill = { type:'pattern', pattern:'solid', fgColor:{ argb: rowColor } }; c.border = { top:{style:'thin'},left:{style:'thin'},bottom:{style:'thin'},right:{style:'thin'} }; if (idx===2||idx===3) c.font = { bold:true, size:11 }; });
@@ -127,7 +127,7 @@ export const exportMatchHistoryToExcel = async (matches) => {
       // Lineup per periodo (se presente)
       infoRow += 1;
       if (match.periods?.some(p => Array.isArray(p.lineup) && p.lineup.length>0)) {
-        sheet2.getCell(`A${infoRow}`).value = '9 IN CAMPO PER TEMPO:'; sheet2.getCell(`A${infoRow}`).font = { bold: true, size: 10 }; infoRow++;
+        sheet2.getCell(`A${infoRow}`).value = '7 IN CAMPO PER TEMPO:'; sheet2.getCell(`A${infoRow}`).font = { bold: true, size: 10 }; infoRow++;
         match.periods.forEach(p=>{
           if (Array.isArray(p.lineup) && p.lineup.length>0) {
             sheet2.getCell(`A${infoRow}`).value = p.name; sheet2.getCell(`A${infoRow}`).font = { bold:true, size:9 };
@@ -183,7 +183,7 @@ export const exportMatchHistoryToExcel = async (matches) => {
                 tipo = event.type === 'penalty-opponent-goal' ? 'Gol Avv. (Rig.)' : 'Gol Avv.';
                 descr = match.opponent;
               } else if (event.type === 'own-goal') {
-                tipo = 'Autogol Vigontina'; descr = '';
+                tipo = 'Autogol USMA Padova'; descr = '';
               } else if (event.type === 'opponent-own-goal') {
                 tipo = 'Autogol Avversario'; descr = '';
               } else if (event.type === 'substitution') {
@@ -226,12 +226,12 @@ export const exportMatchHistoryToExcel = async (matches) => {
       });
 
       // Tabella punteggi per periodo
-      const periodHeaders = ['Periodo', 'Vigontina', match.opponent];
+      const periodHeaders = ['Periodo', 'USMA Padova', match.opponent];
       periodHeaders.forEach((h, idx)=>{ const c = sheet2.getCell(`${String.fromCharCode(65+idx)}${infoRow}`); c.value = h; c.font = { bold:true, size:10, color:{ argb: colors.white } }; c.fill = { type:'pattern', pattern:'solid', fgColor:{ argb: colors.darkGreen } }; c.alignment = { horizontal:'center', vertical:'middle' }; c.border = { top:{style:'thin'},left:{style:'thin'},bottom:{style:'thin'},right:{style:'thin'} }; });
       infoRow++;
-      match.periods?.forEach(period=>{ const r = sheet2.getRow(infoRow); r.getCell(1).value = period.name; r.getCell(2).value = period.vigontina || 0; r.getCell(3).value = period.opponent || 0; [1,2,3].forEach(ci=>{ const c = r.getCell(ci); c.alignment={ horizontal:'center', vertical:'middle' }; c.border={ top:{style:'thin'},left:{style:'thin'},bottom:{style:'thin'},right:{style:'thin'} }; }); infoRow++; });
+      match.periods?.forEach(period=>{ const r = sheet2.getRow(infoRow); r.getCell(1).value = period.name; r.getCell(2).value = period.usma || 0; r.getCell(3).value = period.opponent || 0; [1,2,3].forEach(ci=>{ const c = r.getCell(ci); c.alignment={ horizontal:'center', vertical:'middle' }; c.border={ top:{style:'thin'},left:{style:'thin'},bottom:{style:'thin'},right:{style:'thin'} }; }); infoRow++; });
 
-      const totalRow = sheet2.getRow(infoRow); totalRow.getCell(1).value='TOTALE PUNTI'; totalRow.getCell(2).value=match.finalPoints?.vigontina || 0; totalRow.getCell(3).value=match.finalPoints?.opponent || 0;
+      const totalRow = sheet2.getRow(infoRow); totalRow.getCell(1).value='TOTALE PUNTI'; totalRow.getCell(2).value=match.finalPoints?.usma || 0; totalRow.getCell(3).value=match.finalPoints?.opponent || 0;
       [1,2,3].forEach(ci=>{ const c = totalRow.getCell(ci); c.font={ bold:true, size:11 }; c.fill={ type:'pattern', pattern:'solid', fgColor:{ argb:{ argb: colors.yellow } } }; c.alignment={ horizontal:'center', vertical:'middle' }; c.border={ top:{style:'medium'},left:{style:'medium'},bottom:{style:'medium'},right:{style:'medium'} }; });
       infoRow++;
     });
@@ -240,7 +240,7 @@ export const exportMatchHistoryToExcel = async (matches) => {
 
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    const fileName = `Vigontina_Storico_${new Date().toLocaleDateString('it-IT').replace(/\//g,'-')}.xlsx`;
+    const fileName = `USMA_Padova_Storico_${new Date().toLocaleDateString('it-IT').replace(/\//g,'-')}.xlsx`;
     const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = fileName; link.click(); URL.revokeObjectURL(link.href);
     return true;
   } catch (error) {
