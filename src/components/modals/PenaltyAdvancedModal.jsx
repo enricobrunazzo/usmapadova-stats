@@ -9,11 +9,11 @@ const PenaltyAdvancedModal = ({ onConfirm, onCancel, opponentName, availablePlay
 
   const handleConfirm = () => {
     if (!selectedTeam || isScored === null) return;
-    if (selectedTeam === 'vigontina' && isScored && !selectedScorer) return;
+    if (selectedTeam === 'usma' && isScored && !selectedScorer) return;
     onConfirm(selectedTeam, isScored, selectedScorer);
   };
 
-  const canConfirm = selectedTeam && isScored !== null && (selectedTeam !== 'vigontina' || !isScored || selectedScorer);
+  const canConfirm = selectedTeam && isScored !== null && (selectedTeam !== 'usma' || !isScored || selectedScorer);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -29,8 +29,8 @@ const PenaltyAdvancedModal = ({ onConfirm, onCancel, opponentName, availablePlay
         <div className="mb-4">
           <p className="text-sm font-medium text-gray-700 mb-2">Chi calcia il rigore?</p>
           <div className="space-y-2">
-            <button onClick={() => setSelectedTeam('vigontina')} className={`w-full p-3 rounded-lg border-2 text-left ${selectedTeam === 'vigontina' ? 'border-purple-500 bg-purple-50' : 'border-gray-200 bg-white hover:bg-gray-50'}`}>
-              <p className="font-medium text-gray-800">Vigontina</p>
+            <button onClick={() => setSelectedTeam('usma')} className={`w-full p-3 rounded-lg border-2 text-left ${selectedTeam === 'usma' ? 'border-purple-500 bg-purple-50' : 'border-gray-200 bg-white hover:bg-gray-50'}`}>
+              <p className="font-medium text-gray-800">USMA Padova</p>
             </button>
             <button onClick={() => setSelectedTeam('opponent')} className={`w-full p-3 rounded-lg border-2 text-left ${selectedTeam === 'opponent' ? 'border-purple-500 bg-purple-50' : 'border-gray-200 bg-white hover:bg-gray-50'}`}>
               <p className="font-medium text-gray-800">{opponentName}</p>
@@ -49,8 +49,8 @@ const PenaltyAdvancedModal = ({ onConfirm, onCancel, opponentName, availablePlay
           </div>
         )}
 
-        {/* Step 3: Se Vigontina segna, scegli giocatore */}
-        {selectedTeam === 'vigontina' && isScored && (
+        {/* Step 3: Se USMA segna, scegli giocatore */}
+        {selectedTeam === 'usma' && isScored && (
           <div className="mb-4">
             <p className="text-sm font-medium text-gray-700 mb-2">Chi ha segnato?</p>
             <div className="max-h-40 overflow-y-auto space-y-1">
