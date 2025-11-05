@@ -259,7 +259,65 @@ const PeriodPlay = ({
                   </div>
                 </div>
               </div>
+
+              {/* SEZIONE EVENTI - CRONOLOGIA TEMPO REALE */}
+              {events.length > 0 && (
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <h3 className="text-lg font-semibold mb-4 text-center text-gray-700">📋 Eventi della Partita</h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Eventi USMA */}
+                    <div>
+                      <h4 className="text-sm font-medium text-green-700 mb-2 text-center">🟢 USMA Padova</h4>
+                      <div className="space-y-2">
+                        {organizedEvents.usma.length > 0 ? (
+                          organizedEvents.usma.map((event, idx) => (
+                            <TeamEventCard key={idx} event={event} team="usma" opponentName={match.opponent} />
+                          ))
+                        ) : (
+                          <div className="text-xs text-gray-500 text-center p-2">Nessun evento</div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Eventi Avversario */}
+                    <div>
+                      <h4 className="text-sm font-medium text-blue-700 mb-2 text-center">🔵 {match.opponent}</h4>
+                      <div className="space-y-2">
+                        {organizedEvents.opponent.length > 0 ? (
+                          organizedEvents.opponent.map((event, idx) => (
+                            <TeamEventCard key={idx} event={event} team="opponent" opponentName={match.opponent} />
+                          ))
+                        ) : (
+                          <div className="text-xs text-gray-500 text-center p-2">Nessun evento</div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </>
+          )}
+
+          {/* BOTTONE FINE TEMPO - sempre visibile in basso */}
+          {!isProvaTecnica && (
+            <div className="mt-6 pt-4 border-t border-gray-200">
+              <button
+                onClick={onFinish}
+                disabled={!canFinish}
+                className={`w-full py-3 rounded-lg font-semibold text-lg ${
+                  canFinish
+                    ? "bg-red-600 hover:bg-red-700 text-white"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+              >
+                <Flag className="w-5 h-5 inline mr-2" />
+                Fine {periodTitle}
+                {!canFinish && (
+                  <div className="text-xs mt-1">Completa la formazione per finire</div>
+                )}
+              </button>
+            </div>
           )}
 
           {/* MODALS - tutte le interazioni */}
