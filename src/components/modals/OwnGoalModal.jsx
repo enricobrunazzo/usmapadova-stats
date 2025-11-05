@@ -37,7 +37,7 @@ const OwnGoalModal = ({ onConfirm, onCancel, opponentName }) => {
               ⚽
             </span>
             <div>
-              <p className="font-medium text-gray-800">Autogol Vigontina</p>
+              <p className="font-medium text-gray-800">Autogol USMA Padova</p>
               <p className="text-xs text-gray-500">Il gol viene assegnato a {opponentName}</p>
             </div>
           </button>
@@ -55,7 +55,7 @@ const OwnGoalModal = ({ onConfirm, onCancel, opponentName }) => {
             </span>
             <div>
               <p className="font-medium text-gray-800">Autogol {opponentName}</p>
-              <p className="text-xs text-gray-500">Il gol viene assegnato a Vigontina</p>
+              <p className="text-xs text-gray-500">Il gol viene assegnato a USMA Padova</p>
             </div>
           </button>
         </div>
