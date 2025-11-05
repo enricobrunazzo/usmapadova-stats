@@ -10,13 +10,13 @@ const FreeKickModal = ({ onConfirm, onCancel, opponentName, availablePlayers }) 
 
   const handleConfirm = () => {
     if (!selectedOutcome || !selectedTeam) return;
-    if (selectedTeam === 'vigontina' && !selectedPlayer) return;
+    if (selectedTeam === 'usma' && !selectedPlayer) return;
     if (selectedOutcome === 'hit' && !hitType) return;
     onConfirm(selectedOutcome, selectedTeam, selectedPlayer, hitType);
   };
 
   const canConfirm = selectedOutcome && selectedTeam &&
-    (selectedTeam !== 'vigontina' || selectedPlayer) &&
+    (selectedTeam !== 'usma' || selectedPlayer) &&
     (selectedOutcome !== 'hit' || hitType);
 
   return (
@@ -33,8 +33,8 @@ const FreeKickModal = ({ onConfirm, onCancel, opponentName, availablePlayers }) 
         <div className="mb-4">
           <p className="text-sm font-medium text-gray-700 mb-2">Chi ha calciato la punizione?</p>
           <div className="space-y-2">
-            <button onClick={() => setSelectedTeam('vigontina')} className={`w-full p-3 rounded-lg border-2 text-left ${selectedTeam === 'vigontina' ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white hover:bg-gray-50'}`}>
-              <p className="font-medium text-gray-800">Vigontina</p>
+            <button onClick={() => setSelectedTeam('usma')} className={`w-full p-3 rounded-lg border-2 text-left ${selectedTeam === 'usma' ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white hover:bg-gray-50'}`}>
+              <p className="font-medium text-gray-800">USMA Padova</p>
             </button>
             <button onClick={() => setSelectedTeam('opponent')} className={`w-full p-3 rounded-lg border-2 text-left ${selectedTeam === 'opponent' ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white hover:bg-gray-50'}`}>
               <p className="font-medium text-gray-800">{opponentName}</p>
@@ -71,8 +71,8 @@ const FreeKickModal = ({ onConfirm, onCancel, opponentName, availablePlayers }) 
           </div>
         )}
 
-        {/* Step 4: Se Vigontina, scegli giocatore */}
-        {selectedTeam === 'vigontina' && (
+        {/* Step 4: Se USMA, scegli giocatore */}
+        {selectedTeam === 'usma' && (
           <div className="mb-4">
             <p className="text-sm font-medium text-gray-700 mb-2">Seleziona il giocatore:</p>
             <div className="max-h-40 overflow-y-auto space-y-1">
