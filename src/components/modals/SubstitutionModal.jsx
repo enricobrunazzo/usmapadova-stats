@@ -11,7 +11,7 @@ const SubstitutionModal = ({ periodLineup = [], notCalled = [], onConfirm, onCan
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <h3 className="text-lg font-semibold mb-4 text-center">Sostituzione Vigontina</h3>
+        <h3 className="text-lg font-semibold mb-4 text-center">Sostituzione USMA Padova</h3>
         <div className="space-y-4">
           <div>
             <label className="block text-sm mb-1">Esce</label>
