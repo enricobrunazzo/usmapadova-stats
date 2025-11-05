@@ -72,7 +72,8 @@ const NewMatchForm = ({ onSubmit, onCancel, requestPassword = false }) => {
   const canSubmit = opponent.trim().length > 0 && !!captain && (!requestPassword || organizerPassword.trim().length > 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-700 to-cyan-600 p-4">
+    // Allineato al background della Home
+    <div className="min-h-screen bg-gradient-to-br from-[#C22B2B] via-[#D6492F] to-[#F2C84B] p-4">
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-lg shadow-lg p-4 md:p-6 relative">
           <div className="flex items-center gap-2 mb-4">
