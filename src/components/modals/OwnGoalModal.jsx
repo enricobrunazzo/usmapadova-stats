@@ -26,9 +26,9 @@ const OwnGoalModal = ({ onConfirm, onCancel, opponentName }) => {
 
         <div className="space-y-3 mb-6">
           <button
-            onClick={() => setSelectedTeam('vigontina')}
+            onClick={() => setSelectedTeam('usma')}
             className={`w-full p-3 rounded-lg border-2 text-left flex items-center gap-3 ${
-              selectedTeam === 'vigontina'
+              selectedTeam === 'usma'
                 ? 'border-red-500 bg-red-50'
                 : 'border-gray-200 bg-white hover:bg-gray-50'
             }`}
