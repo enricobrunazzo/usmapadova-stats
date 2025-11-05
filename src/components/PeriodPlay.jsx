@@ -146,7 +146,8 @@ const PeriodPlay = ({
     return { usma: usmaEvents.sort(sortByMinute), opponent: opponentEvents.sort(sortByMinute) };
   }, [events]);
 
-  const canFinish = isProvaTecnica || isLineupValid;
+  // Consenti sempre di terminare il tempo
+  const canFinish = true;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-700 to-cyan-600 p-4">
@@ -304,18 +305,10 @@ const PeriodPlay = ({
             <div className="mt-6 pt-4 border-t border-gray-200">
               <button
                 onClick={onFinish}
-                disabled={!canFinish}
-                className={`w-full py-3 rounded-lg font-semibold text-lg ${
-                  canFinish
-                    ? "bg-red-600 hover:bg-red-700 text-white"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                }`}
+                className="w-full py-3 rounded-lg font-semibold text-lg bg-red-600 hover:bg-red-700 text-white"
               >
                 <Flag className="w-5 h-5 inline mr-2" />
                 Fine {periodTitle}
-                {!canFinish && (
-                  <div className="text-xs mt-1">Completa la formazione per finire</div>
-                )}
               </button>
             </div>
           )}
