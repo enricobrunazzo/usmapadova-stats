@@ -47,13 +47,13 @@ const FIGCReport = ({ match, onBack }) => {
 
   // Calcola punti FIGC: 1 punto per vittoria o pareggio, 0 per sconfitta
   const calculatePeriodPoints = (period, team) => {
-    const v = period.vigontina;
+    const u = period.usma;
     const o = period.opponent;
     
     // Se siamo ospitati, invertiamo i risultati
     const isHome = match.isHome;
-    const homeScore = isHome ? v : o;
-    const awayScore = isHome ? o : v;
+    const homeScore = isHome ? u : o;
+    const awayScore = isHome ? o : u;
     
     if (team === 'home') {
       return (homeScore >= awayScore) ? 1 : 0;
