@@ -13,7 +13,7 @@ const MatchHistory = ({
   onExportHistory,
 }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-700 to-cyan-600 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#C22B2B] via-[#D6492F] to-[#F2C84B] p-4">
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-lg shadow-lg p-6">
           <button
