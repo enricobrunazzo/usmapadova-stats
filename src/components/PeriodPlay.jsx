@@ -38,7 +38,7 @@ const PeriodPlay = ({
   const period = hasMatch && periodIndex != null ? match.periods[periodIndex] : null;
   if (!hasMatch || !period) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-700 to-cyan-600 p-4">
+      <div className="min-h-screen bg-gradient-to-br from-[#C22B2B] via-[#D6492F] to-[#F2C84B] p-4">
         <div className="max-w-2xl mx-auto text-white text-center">
           <p className="mb-3">Errore: periodo non disponibile.</p>
           <button onClick={onBack} className="bg-white/10 hover:bg-white/20 px-3 py-2 rounded">Torna indietro</button>
@@ -150,7 +150,7 @@ const PeriodPlay = ({
   const canFinish = true;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-700 to-cyan-600 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#C22B2B] via-[#D6492F] to-[#F2C84B] p-4">
       <div className="max-w-2xl mx-auto space-y-4">
         <button onClick={onBack} className="text-white hover:text-gray-200 flex items-center gap-2"><ArrowLeft className="w-5 h-5" />Torna alla Panoramica</button>
 
@@ -274,7 +274,7 @@ const PeriodPlay = ({
                         {organizedEvents.usma.length > 0 ? (
                           organizedEvents.usma.map((event, idx) => (
                             <TeamEventCard key={idx} event={event} team="usma" opponentName={match.opponent} />
-                          ))
+                          ))}
                         ) : (
                           <div className="text-xs text-gray-500 text-center p-2">Nessun evento</div>
                         )}
@@ -288,7 +288,7 @@ const PeriodPlay = ({
                         {organizedEvents.opponent.length > 0 ? (
                           organizedEvents.opponent.map((event, idx) => (
                             <TeamEventCard key={idx} event={event} team="opponent" opponentName={match.opponent} />
-                          ))
+                          ))}
                         ) : (
                           <div className="text-xs text-gray-500 text-center p-2">Nessun evento</div>
                         )}
