@@ -274,7 +274,7 @@ const PeriodPlay = ({
                         {organizedEvents.usma.length > 0 ? (
                           organizedEvents.usma.map((event, idx) => (
                             <TeamEventCard key={idx} event={event} team="usma" opponentName={match.opponent} />
-                          ))}
+                          ))
                         ) : (
                           <div className="text-xs text-gray-500 text-center p-2">Nessun evento</div>
                         )}
