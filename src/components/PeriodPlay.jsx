@@ -288,7 +288,7 @@ const PeriodPlay = ({
                         {organizedEvents.opponent.length > 0 ? (
                           organizedEvents.opponent.map((event, idx) => (
                             <TeamEventCard key={idx} event={event} team="opponent" opponentName={match.opponent} />
-                          ))}
+                          ))
                         ) : (
                           <div className="text-xs text-gray-500 text-center p-2">Nessun evento</div>
                         )}
