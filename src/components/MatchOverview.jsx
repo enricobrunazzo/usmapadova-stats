@@ -16,9 +16,9 @@ const MatchOverview = ({
   onBack,
 }) => {
   return (
-    <div className="min-h-screen bg-neutral-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#C22B2B] via-[#D6492F] to-[#F2C84B] p-4">
       <div className="max-w-2xl mx-auto space-y-4">
-        <button onClick={onBack} className="text-primary hover:text-primary-dark flex items-center gap-2">
+        <button onClick={onBack} className="text-white/90 hover:text-white flex items-center gap-2">
           <ArrowLeft className="w-5 h-5" /> Abbandona Partita
         </button>
 
