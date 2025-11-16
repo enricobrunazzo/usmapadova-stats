@@ -15,8 +15,7 @@ const NewMatchForm = ({ onSubmit, onCancel, requestPassword = false }) => {
   // Staff
   const [assistantReferee, setAssistantReferee] = useState("");
   const [teamManager, setTeamManager] = useState("");
-  const [coach, setCoach] = useState("Gianmaria Tonolo");
-
+ const [coach, setCoach] = useState("Ivan");
   // Giocatori
   const [notCalled, setNotCalled] = useState([]);
   const [captain, setCaptain] = useState(null);
@@ -217,21 +216,6 @@ const NewMatchForm = ({ onSubmit, onCancel, requestPassword = false }) => {
                 <select
                   value={assistantReferee}
                   onChange={(e) => setAssistantReferee(e.target.value)}
-                  className="w-full border rounded px-3 py-2"
-                >
-                  <option value="">Seleziona...</option>
-                  <option>Enrico Vendramin</option>
-                  <option>Enrico Brunazzo</option>
-                  <option>Francesco Campello</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text sm font-medium text-slate-700 mb-1">
-                  Dirigente Accompagnatore
-                </label>
-                <select
-                  value={teamManager}
-                  onChange={(e) => setTeamManager(e.target.value)}
                   className="w-full border rounded px-3 py-2"
                 >
                   <option value="">Seleziona...</option>
