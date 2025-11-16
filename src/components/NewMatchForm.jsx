@@ -41,7 +41,7 @@ const NewMatchForm = ({ onSubmit, onCancel, requestPassword = false }) => {
       assistantReferee,
       manager: teamManager,
       coach,
-      notCalled,
+      notCalled
   };
 
 
