@@ -15,23 +15,13 @@ const NewMatchForm = ({ onSubmit, onCancel, requestPassword = false }) => {
  const [coach, setCoach] = useState("Ivan");
   // Giocatori
   const [notCalled, setNotCalled] = useState([]);
-  const [captain, setCaptain] = useState(null);
-
   // Picker states
   const [showNotCalledPicker, setShowNotCalledPicker] = useState(false);
-  const [showCaptainPicker, setShowCaptainPicker] = useState(false);
-
-  const availableForCaptain = useMemo(
-    () => PLAYERS.filter((p) => !notCalled.includes(p.num)),
-    [notCalled]
-  );
-
+ 
   const toggleNotCalled = (num) => {
     setNotCalled((prev) => {
       const exists = prev.includes(num);
       const next = exists ? prev.filter((n) => n !== num) : [...prev, num];
-      if (next.includes(captain)) setCaptain(null);
-      return next;
     });
   };
 
@@ -40,16 +30,7 @@ const NewMatchForm = ({ onSubmit, onCancel, requestPassword = false }) => {
       alert("Inserisci il nome dell'avversario");
       return;
     }
-    if (!captain) {
-      alert("Seleziona il capitano");
-      return;
     }
-    if (requestPassword && !organizerPassword.trim()) {
-      alert("Inserisci la password organizzatore per creare la partita");
-      return;
-    }
-    
-    const captainPlayer = PLAYERS.find(p => p.num === captain);
     
     onSubmit({
       competition,
@@ -61,11 +42,8 @@ const NewMatchForm = ({ onSubmit, onCancel, requestPassword = false }) => {
       manager: teamManager,
       coach,
       notCalled,
-      captain: captainPlayer ? { num: captainPlayer.num, number: captainPlayer.num, name: captainPlayer.name } : null,
-    }, organizerPassword);
   };
 
-  const canSubmit = opponent.trim().length > 0 && !!captain && (!requestPassword || organizerPassword.trim().length > 0);
 
   return (
     // Allineato al background della Home
@@ -83,28 +61,6 @@ const NewMatchForm = ({ onSubmit, onCancel, requestPassword = false }) => {
             </button>
           </div>
           <h2 className="text-xl font-semibold mb-4">Nuova Partita</h2>
-
-          {requestPassword && (
-            <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <Lock size={16} className="text-blue-600" />
-                <label className="block text-sm font-medium text-blue-800">
-                  Password Organizzatore *
-                </label>
-              </div>
-              <input
-                type="password"
-                value={organizerPassword}
-                onChange={(e) => setOrganizerPassword(e.target.value)}
-                placeholder="Inserisci password organizzatore..."
-                className="w-full border rounded px-3 py-2 mb-2"
-                required
-              />
-              <p className="text-xs text-blue-600">
-                Necessaria per creare partite condivise e gestire eventi durante il match
-              </p>
-            </div>
-          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -224,26 +180,6 @@ const NewMatchForm = ({ onSubmit, onCancel, requestPassword = false }) => {
               </button>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="text-sm text-slate-700">
-                Capitano: {" "}
-                <span className="font-semibold">
-                  {captain
-                    ? `${captain} ${PLAYERS.find((p) => p.num === captain)?.name ?? ""}`
-                    : "non selezionato"}
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowCaptainPicker(true)}
-                className="inline-flex items-center gap-2 bg-yellow-100 hover:bg-yellow-200 px-3 py-2 rounded border text-sm"
-              >
-                <span className="inline-flex items-center justify-center w-5 h-5 bg-white text-yellow-600 rounded border border-yellow-600 text-xs font-bold">
-                  C
-                </span>
-                Capitano
-              </button>
-            </div>
           </div>
 
           <div className="mt-6 flex items-center justify-end gap-2">
@@ -264,13 +200,6 @@ const NewMatchForm = ({ onSubmit, onCancel, requestPassword = false }) => {
             </button>
           </div>
 
-          {requestPassword && (
-            <div className="mt-4 p-3 bg-gray-50 border rounded-lg">
-              <p className="text-xs text-gray-600 text-center">
-                <strong>Suggerimento:</strong> La password è <code className="bg-gray-200 px-1 rounded">usma2025</code>
-              </p>
-            </div>
-          )}
         </div>
       </div>
 
@@ -280,8 +209,7 @@ const NewMatchForm = ({ onSubmit, onCancel, requestPassword = false }) => {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[60vh] overflow-auto pr-1">
             {PLAYERS.map((player) => {
               const excluded = notCalled.includes(player.num);
-              const isCaptain = captain === player.num;
-              const base = excluded
+const isCaptain = false;              const base = excluded
                 ? "bg-red-600 text-white border-red-600"
                 : "bg-white text-gray-800 border-gray-300 hover:bg-gray-50";
               return (
@@ -309,49 +237,6 @@ const NewMatchForm = ({ onSubmit, onCancel, requestPassword = false }) => {
         </PickerModal>
       )}
 
-      {/* MODAL: Capitano (single-select) - rimane invariato */}
-      {showCaptainPicker && (
-        <PickerModal title="Seleziona Capitano" onClose={() => setShowCaptainPicker(false)}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[60vh] overflow-auto pr-1">
-            {availableForCaptain.map((player) => (
-              <button
-                key={player.num}
-                type="button"
-                onClick={() => setCaptain(player.num)}
-                className={`w-full text-left p-2 border rounded flex items-center gap-2 ${
-                  captain === player.num
-                    ? "bg-yellow-500 text-white border-yellow-600"
-                    : "bg-white border-slate-200 hover:bg-gray-50"
-                }`}
-              >
-                {captain === player.num && (
-                  <span className="inline-flex items-center justify-center w-5 h-5 bg-white text-yellow-600 rounded border border-yellow-600 text-xs font-bold">
-                    C
-                  </span>
-                )}
-                <span>{player.num} {player.name}</span>
-              </button>
-            ))}
-          </div>
-          <div className="mt-4 flex justify-end gap-2">
-            <button
-              onClick={() => setCaptain(null)}
-              className="px-3 py-2 rounded border bg-white hover:bg-gray-50 text-sm"
-              title="Azzera capitano"
-            >
-              Azzera
-            </button>
-            <button
-              onClick={() => setShowCaptainPicker(false)}
-              className="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600"
-            >
-              Conferma
-            </button>
-          </div>
-        </PickerModal>
-      )}
-    </div>
-  );
 };
 
 const PickerModal = ({ title, children, onClose }) => {
