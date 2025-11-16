@@ -242,7 +242,7 @@ const isCaptain = false;              const base = excluded
 const PickerModal = ({ title, children, onClose }) => {
 return (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
-        className="absolute inset-0 bg-black/40"
+        <div className="absolute inset-0 bg-black/40"
         onClick={onClose}
         aria-hidden="true"
       />
