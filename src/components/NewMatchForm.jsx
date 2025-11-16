@@ -11,27 +11,24 @@ const NewMatchForm = ({ onSubmit, onCancel }) => {
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
 
   const [coach, setCoach] = useState("Ivan");
-  // Variabili mancanti (ora aggiunte)
-  const [teamManager, setTeamManager] = useState("");
-  const [assistantReferee, setAssistantReferee] = useState("");
 
   // Giocatori
   const [notCalled, setNotCalled] = useState([]);
   // Picker states
   const [showNotCalledPicker, setShowNotCalledPicker] = useState(false);
 
-  // Variabile 'canSubmit' (ora definita)
+  // Variabile 'canSubmit'
   const canSubmit = opponent.trim() !== "";
 
   const toggleNotCalled = (num) => {
     setNotCalled((prev) => {
       const exists = prev.includes(num);
       const next = exists ? prev.filter((n) => n !== num) : [...prev, num];
-      return next; // N.B: ho aggiunto 'return next' che mancava nel tuo codice
+      return next;
     });
   };
 
-  // Logica 'handleSubmit' (ora corretta)
+  // Logica 'handleSubmit' (aggiornata senza manager e guardalinee)
   const handleSubmit = () => {
     if (!canSubmit) {
       alert("Inserisci il nome dell'avversario");
@@ -45,8 +42,8 @@ const NewMatchForm = ({ onSubmit, onCancel }) => {
       isHome,
       opponent,
       date,
-      assistantReferee,
-      manager: teamManager, // Mappa corretta
+      // assistantReferee, // Rimosso
+      // manager: teamManager, // Rimosso
       coach,
       notCalled,
     });
@@ -148,36 +145,12 @@ const NewMatchForm = ({ onSubmit, onCancel }) => {
               <input
                 type="date"
                 value={date}
-                onChange={(e) => setDate(e.target.value)}
+                onChange={(e) => setDate(e.g.target.value)}
                 className="w-full border rounded px-3 py-2"
               />
             </div>
 
-            {/* CAMPI AGGIUNTI PER LE VARIABILI MANCANTI */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Dirigente
-              </label>
-              <input
-                value={teamManager}
-                onChange={(e) => setTeamManager(e.target.value)}
-                placeholder="Nome Dirigente"
-                className="w-full border rounded px-3 py-2"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Guardalinee
-              </label>
-              <input
-                value={assistantReferee}
-                onChange={(e) => setAssistantReferee(e.target.value)}
-                placeholder="Nome Guardalinee"
-                className="w-full border rounded px-3 py-2"
-              />
-            </div>
-            {/* FINE CAMPI AGGIUNTI */}
+            {/* CAMPI DIRIGENTE E GUARDALINEE RIMOSSI */}
 
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-slate-700 mb-1">
@@ -281,15 +254,11 @@ const NewMatchForm = ({ onSubmit, onCancel }) => {
           </div>
         </PickerModal>
       )}
+    </div>
+  );
+};
 
-      {/* --- INIZIO CORREZIONE SINTASSI --- */}
-    </div> // <-- 1. Questo </div> mancava (chiude 'min-h-screen')
-  ); // <-- 2. Questo ); mancava (chiude 'return' del componente)
-}; // <-- 3. Questa }; chiude il componente NewMatchForm
-{/* --- FINE CORREZIONE SINTASSI --- */}
-
-
-// Componente PickerModal (invariato, era già corretto)
+// Componente PickerModal (invariato)
 const PickerModal = ({ title, children, onClose }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
