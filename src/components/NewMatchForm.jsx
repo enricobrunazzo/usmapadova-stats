@@ -12,9 +12,6 @@ const NewMatchForm = ({ onSubmit, onCancel, requestPassword = false }) => {
   
   const [organizerPassword, setOrganizerPassword] = useState("");
 
-  // Staff
-  const [assistantReferee, setAssistantReferee] = useState("");
-  const [teamManager, setTeamManager] = useState("");
  const [coach, setCoach] = useState("Ivan");
   // Giocatori
   const [notCalled, setNotCalled] = useState([]);
@@ -206,26 +203,6 @@ const NewMatchForm = ({ onSubmit, onCancel, requestPassword = false }) => {
             </div>
           </div>
 
-          <div className="mt-4 p-3 rounded border bg-slate-50">
-            <h3 className="font-medium text-slate-800 mb-2">Staff</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Assistente Arbitro
-                </label>
-                <select
-                  value={assistantReferee}
-                  onChange={(e) => setAssistantReferee(e.target.value)}
-                  className="w-full border rounded px-3 py-2"
-                >
-                  <option value="">Seleziona...</option>
-                  <option>Enrico Vendramin</option>
-                  <option>Enrico Brunazzo</option>
-                  <option>Francesco Campello</option>
-                </select>
-              </div>
-            </div>
-          </div>
 
           <div className="my-4 border-t" />
 
