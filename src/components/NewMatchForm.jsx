@@ -29,20 +29,20 @@ const NewMatchForm = ({ onSubmit, onCancel, requestPassword = false }) => {
     if (!opponent.trim()) {
       alert("Inserisci il nome dell'avversario");
       return;
+
+        onSubmit({
+              competition,
+              matchDay: competition.includes("Torneo") ? matchDay : null,
+              isHome,
+              opponent,
+              date,
+              assistantReferee,
+              manager: teamManager,
+              coach,
+              notCalled
+            });
     }
     }
-    
-    onSubmit({
-      competition,
-      matchDay: competition.includes("Torneo") ? matchDay : null,
-      isHome,
-      opponent,
-      date,
-      assistantReferee,
-      manager: teamManager,
-      coach,
-      notCalled
-  };
 
 
   return (
