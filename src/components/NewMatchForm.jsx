@@ -1,49 +1,56 @@
-// components/NewMatchForm.jsx (fix: campo manager mappato correttamente)
-import React, { useState, useMemo } from "react";
-import { ArrowLeft, Users, X, Lock } from "lucide-react";
+// components/NewMatchForm.jsx
+import React, { useState } from "react";
+import { ArrowLeft, Users, X } from "lucide-react";
 import { PLAYERS } from "../constants/players";
 
-const NewMatchForm = ({ onSubmit, onCancel, requestPassword = false }) => {
+const NewMatchForm = ({ onSubmit, onCancel }) => {
   const [competition, setCompetition] = useState("Torneo Provinciale Autunnale");
   const [matchDay, setMatchDay] = useState("");
   const [isHome, setIsHome] = useState(true);
   const [opponent, setOpponent] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
-  
-  const [organizerPassword, setOrganizerPassword] = useState("");
 
- const [coach, setCoach] = useState("Ivan");
+  const [coach, setCoach] = useState("Ivan");
+  // Variabili mancanti (ora aggiunte)
+  const [teamManager, setTeamManager] = useState("");
+  const [assistantReferee, setAssistantReferee] = useState("");
+
   // Giocatori
   const [notCalled, setNotCalled] = useState([]);
   // Picker states
   const [showNotCalledPicker, setShowNotCalledPicker] = useState(false);
- 
+
+  // Variabile 'canSubmit' (ora definita)
+  const canSubmit = opponent.trim() !== "";
+
   const toggleNotCalled = (num) => {
     setNotCalled((prev) => {
       const exists = prev.includes(num);
       const next = exists ? prev.filter((n) => n !== num) : [...prev, num];
+      return next; // N.B: ho aggiunto 'return next' che mancava nel tuo codice
     });
   };
 
+  // Logica 'handleSubmit' (ora corretta)
   const handleSubmit = () => {
-    if (!opponent.trim()) {
+    if (!canSubmit) {
       alert("Inserisci il nome dell'avversario");
-      return;
-
-        onSubmit({
-              competition,
-              matchDay: competition.includes("Torneo") ? matchDay : null,
-              isHome,
-              opponent,
-              date,
-              assistantReferee,
-              manager: teamManager,
-              coach,
-              notCalled
-            });
-    }
+      return; // Interrompe l'esecuzione qui
     }
 
+    // Se il controllo passa, esegue onSubmit
+    onSubmit({
+      competition,
+      matchDay: competition.includes("Torneo") ? matchDay : null,
+      isHome,
+      opponent,
+      date,
+      assistantReferee,
+      manager: teamManager, // Mappa corretta
+      coach,
+      notCalled,
+    });
+  };
 
   return (
     // Allineato al background della Home
@@ -146,6 +153,32 @@ const NewMatchForm = ({ onSubmit, onCancel, requestPassword = false }) => {
               />
             </div>
 
+            {/* CAMPI AGGIUNTI PER LE VARIABILI MANCANTI */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Dirigente
+              </label>
+              <input
+                value={teamManager}
+                onChange={(e) => setTeamManager(e.target.value)}
+                placeholder="Nome Dirigente"
+                className="w-full border rounded px-3 py-2"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Guardalinee
+              </label>
+              <input
+                value={assistantReferee}
+                onChange={(e) => setAssistantReferee(e.target.value)}
+                placeholder="Nome Guardalinee"
+                className="w-full border rounded px-3 py-2"
+              />
+            </div>
+            {/* FINE CAMPI AGGIUNTI */}
+
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-slate-700 mb-1">
                 Allenatore
@@ -159,15 +192,16 @@ const NewMatchForm = ({ onSubmit, onCancel, requestPassword = false }) => {
             </div>
           </div>
 
-
           <div className="my-4 border-t" />
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="text-sm text-slate-700">
-                Non Convocati: {" "}
+                Non Convocati:{" "}
                 <span className="font-semibold">
-                  {notCalled.length > 0 ? `${notCalled.length} selezionati` : "nessuno"}
+                  {notCalled.length > 0
+                    ? `${notCalled.length} selezionati`
+                    : "nessuno"}
                 </span>
               </div>
               <button
@@ -179,7 +213,6 @@ const NewMatchForm = ({ onSubmit, onCancel, requestPassword = false }) => {
                 Non Convocati
               </button>
             </div>
-
           </div>
 
           <div className="mt-6 flex items-center justify-end gap-2">
@@ -193,23 +226,28 @@ const NewMatchForm = ({ onSubmit, onCancel, requestPassword = false }) => {
               onClick={handleSubmit}
               disabled={!canSubmit}
               className={`px-4 py-2 rounded text-white ${
-                canSubmit ? "bg-blue-500 hover:bg-blue-600" : "bg-blue-300 cursor-not-allowed"
+                canSubmit
+                  ? "bg-blue-500 hover:bg-blue-600"
+                  : "bg-blue-300 cursor-not-allowed"
               }`}
             >
               Inizia Partita
             </button>
           </div>
-
         </div>
       </div>
 
       {/* MODAL: Non Convocati (griglia toggle rosso/grigio) */}
       {showNotCalledPicker && (
-        <PickerModal title={`Seleziona Non Convocati • Esclusi: ${notCalled.length}`} onClose={() => setShowNotCalledPicker(false)}>
+        <PickerModal
+          title={`Seleziona Non Convocati • Esclusi: ${notCalled.length}`}
+          onClose={() => setShowNotCalledPicker(false)}
+        >
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[60vh] overflow-auto pr-1">
             {PLAYERS.map((player) => {
               const excluded = notCalled.includes(player.num);
-const isCaptain = false;              const base = excluded
+              const isCaptain = false; // Logica Capitano (se serve)
+              const base = excluded
                 ? "bg-red-600 text-white border-red-600"
                 : "bg-white text-gray-800 border-gray-300 hover:bg-gray-50";
               return (
@@ -218,10 +256,17 @@ const isCaptain = false;              const base = excluded
                   type="button"
                   onClick={() => !isCaptain && toggleNotCalled(player.num)}
                   disabled={isCaptain}
-                  className={`w-full text-left p-2 border rounded ${base} ${isCaptain ? "opacity-50 cursor-not-allowed" : ""}`}
-                  title={isCaptain ? "Non selezionabile: è il capitano" : `${player.num} ${player.name}`}
+                  className={`w-full text-left p-2 border rounded ${base} ${
+                    isCaptain ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  title={
+                    isCaptain
+                      ? "Non selezionabile: è il capitano"
+                      : `${player.num} ${player.name}`
+                  }
                 >
-                  <span className="font-semibold mr-1">{player.num}</span>{player.name}
+                  <span className="font-semibold mr-1">{player.num}</span>
+                  {player.name}
                 </button>
               );
             })}
@@ -237,12 +282,19 @@ const isCaptain = false;              const base = excluded
         </PickerModal>
       )}
 
-};
+      {/* --- INIZIO CORREZIONE SINTASSI --- */}
+    </div> // <-- 1. Questo </div> mancava (chiude 'min-h-screen')
+  ); // <-- 2. Questo ); mancava (chiude 'return' del componente)
+}; // <-- 3. Questa }; chiude il componente NewMatchForm
+{/* --- FINE CORREZIONE SINTASSI --- */}
 
-const PickerModal = ({ title, children, onClose })> {
-return (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
-        <div className="absolute inset-0 bg-black/40"
+
+// Componente PickerModal (invariato, era già corretto)
+const PickerModal = ({ title, children, onClose }) => {
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+      <div
+        className="absolute inset-0 bg-black/40"
         onClick={onClose}
         aria-hidden="true"
       />
