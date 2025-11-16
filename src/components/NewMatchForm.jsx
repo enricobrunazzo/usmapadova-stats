@@ -145,8 +145,7 @@ const NewMatchForm = ({ onSubmit, onCancel }) => {
               <input
                 type="date"
                 value={date}
-                onChange={(e) => setDate(e.g.target.value)}
-                className="w-full border rounded px-3 py-2"
+onChange={(e) => setDate(e.target.value)}                className="w-full border rounded px-3 py-2"
               />
             </div>
 
